@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display</title>
+    <script src="scripts.js"></script>
+    <script>
+        onload = function () {
+            document.getElementById('power').addEventListener('change', (e) => {
+                let req = new XMLHttpRequest()
+                console.log(e.target.value);
+                req.open("POST", '/triac', true);
+                req.setRequestHeader('Content-Type', 'application/json');
+                req.send(JSON.stringify({'power': e.target.value}));
+            });
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <label for="power">Power</label>
+        <input type="range" id="power" name="power" min="0" max="100" value="0" style="width: 300px;">
+    </div>
+    <div>
+        <label for="program">Program</label>
+        <select name="program" id="program" style="width: 150px"></select>
+        <button id="program_start" value="Start">Start</button>
+    </div>
+    <div>
+        <form id="run_form" name="run">
+            <label for="time">Time: </label>
+            <select id="time" name="time">
+                <option value="1200">20 minutes</option>
+                <option value="1800">30 minutes</option>
+                <option value="2400">40 minutes</option>
+            </select>
+            <label for="power_select">Power:</label>
+            <select id="power_select" name="power_select">
+                <option value="20">20%</option>
+                <option value="40">40%</option>
+                <option value="60">60%</option>
+                <option value="80">80%</option>
+                <option value="100">100%</option>
+            </select>
+            <button id="run" type="button">Apply</button>
+            <button id="stop" type="button" disabled>Stop</button>
+        </form>
+        Remaining time: <label id="remaining_time">0</label>
+    </div>
+    <div>
+        <label id="info">&nbsp;</label>
+    </div>
+</body>
+</html>
