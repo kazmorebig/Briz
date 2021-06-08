@@ -1,4 +1,5 @@
 import random
+import time
 import sanic.app
 from http.server import BaseHTTPRequestHandler
 
@@ -45,6 +46,11 @@ class SensorPMS:
         self.result = Result(*values[2:])
         self.port.reset_input_buffer()
 
+    def read_mocked(self):
+        time.sleep(0.2)
+        values = [random.randint(1, 100) for i in range(14)]
+        self.result = Result(*values[2:])
+
     async def read_async(self):
         try:
             self.queue.get_nowait()
@@ -53,15 +59,9 @@ class SensorPMS:
         return await self.queue.get()
 
     async def read_loop(self):
+        self.port.reset_input_buffer()
         while True:
             if self.port.in_waiting >= 28:
                 await self.queue.put(self.read())
             else:
                 await asyncio.sleep(0.5)
-
-    async def mock_loop(self):
-        while True:
-            result_data = [random.randint(1, 100) for i in range(12)]
-            await self.queue.put(Result(*result_data))
-            await asyncio.sleep(0.5)
-
