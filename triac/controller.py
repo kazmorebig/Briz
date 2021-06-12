@@ -1,6 +1,7 @@
 import asyncio
 import math
 import logging
+from bisect import bisect_left
 from typing import Callable
 
 from triac.SCR import scr
@@ -19,6 +20,8 @@ class Controller:
         self.target_power = 0
         self.regulator = angle_regulator
         self.real_power = 0
+        self.power_list = [1 - (1 + math.cos(a*math.pi/180))/2 for a in range(180)]
+        print('Power list: ', self.power_list)
         logger.debug(f'[CONTROLLER] Initialized')
 
     def set_power(self, power):
@@ -39,8 +42,10 @@ class Controller:
             await asyncio.sleep(0.1)
 
     def _set_regulator(self, power):
-        target_angle = max(0, min(math.floor(power * 1.79), 179))
         self.real_power = power
+        power = max(0, min(power / 100.0, 1))
+        target_angle = bisect_left(self.power_list, power)
+        target_angle = max(0, min(target_angle, 179))
         self.regulator(target_angle)
         logger.debug(f'[CONTROLLER] Angle set {target_angle}')
 

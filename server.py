@@ -104,7 +104,7 @@ async def stop(request: sanic.Request):
 
 async def main():
     global pms5008
-    pms5008 = SensorPMS('/dev/ttyS0', app.loop)
+    pms5008 = SensorPMS('/dev/ttyUSB0', app.loop)
     await asyncio.gather(
         vents.daemon(),
         program.daemon(),
