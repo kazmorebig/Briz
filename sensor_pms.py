@@ -71,6 +71,6 @@ class SensorPMS:
                 self.read()
                 self.port.reset_input_buffer()
                 self.data_received.set()
-                Status.instance['pms'] = self.result.as_json()
+                Status()['pms'] = self.result.as_dict()
             await asyncio.sleep(0.5)
 

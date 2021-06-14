@@ -18,6 +18,7 @@ from status import Status
 from sensor_pms import SensorPMS
 from triac.controller import vents
 from sanic.log import logger, LOGGING_CONFIG_DEFAULTS
+from sanic.websocket import WebSocketProtocol
 
 LOGGING_CONFIG_DEFAULTS['loggers']['sanic.root']['level'] = 'DEBUG'
 
@@ -84,11 +85,10 @@ async def stop_record(request):
     pass
 
 
-@app.get('/status')
-async def status_handler(request: sanic.Request):
-    resp = await request.respond()
-    await Status.instance.add_responder(resp)
-    return resp
+@app.websocket('/status')
+async def status_handler(request: sanic.Request, ws):
+    logger.debug('Status requested')
+    await Status().send_async(ws)
 
 stop_event = asyncio.Event()
 
@@ -134,12 +134,11 @@ async def main():
     global pms5008
     pms5008 = SensorPMS('/dev/ttyUSB0', app.loop)
     Status(app.loop)
-    Status.instance['test'] = 'value'
     await asyncio.gather(
         vents.daemon(),
         program.daemon(),
         pms5008.read_loop(),
-        Status.instance.daemon()
+        Status().daemon()
     )
 
 app.add_task(main())

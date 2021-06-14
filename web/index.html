@@ -6,17 +6,6 @@
     <link href="main.css" rel="stylesheet">
     <script type="module" src="chart.js"></script>
     <script type="module" src="scripts.js"></script>
-    <script>
-        onload = function () {
-            document.getElementById('power').addEventListener('change', (e) => {
-                let req = new XMLHttpRequest()
-                console.log(e.target.value);
-                req.open("POST", '/triac', true);
-                req.setRequestHeader('Content-Type', 'application/json');
-                req.send(JSON.stringify({'power': e.target.value}));
-            });
-        }
-    </script>
 </head>
 <body>
     <div class="container">

@@ -6,6 +6,8 @@ from typing import Callable
 
 from triac.SCR import scr
 
+from status import Status
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,6 +31,7 @@ class Controller:
         else:
             self.target_power = min(max(power, Controller.MIN_POWER), Controller.MAX_POWER)
         logger.debug(f'Target power set {self.target_power}')
+        self.update_status()
 
     async def daemon(self):
         while True:
@@ -38,6 +41,7 @@ class Controller:
                     await asyncio.sleep(Controller.START_DURATION)
                 self._set_regulator(self.target_power)
                 self.current_power = self.target_power
+                self.update_status()
             await asyncio.sleep(0.1)
 
     def _set_regulator(self, power):
@@ -47,6 +51,14 @@ class Controller:
         target_angle = max(0, min(target_angle, 179))
         self.regulator(target_angle)
         logger.debug(f'Angle set {target_angle}')
+        self.update_status()
+
+    def update_status(self):
+        Status()['triac'] = {
+            'target': self.target_power,
+            'current': self.current_power,
+            'real': self.real_power
+        }
 
 
 vents = Controller(lambda x: scr.VoltageRegulation(1, x))
