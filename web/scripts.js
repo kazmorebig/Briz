@@ -1,8 +1,6 @@
-
 window.addEventListener('load', ()=>{
 
     document.getElementById('run').addEventListener('click', (ev) => {
-        document.getElementById('stop').removeAttribute('disabled');
         fetch('/start', {
             method: 'POST',
             body: new FormData(document.getElementById('run_form'))
@@ -26,6 +24,34 @@ window.addEventListener('load', ()=>{
 
     document.getElementById('stop').addEventListener('click', async () => {
         await fetch('/stop');
+    })
+
+
+
+    new Promise(async () => {
+        const data = {
+          datasets: [{
+              label:'PMS 5003',
+              backgroundColor: 'rgb(255, 99, 132)',
+              borderColor: 'rgb(255, 99, 132)',
+              data: [],
+          }]
+        };
+        const plot_config = {
+            type: 'bar',
+            data,
+            options: {}
+        }
+        const pms_chart = new Chart(document.getElementById('pms_info'), plot_config);
+        const stream = await fetch('/pms');
+        const reader = stream.body.getReader();
+        while (1) {
+            const result = await reader.read();
+            const pms_data = JSON.parse(new TextDecoder().decode(result.value));
+            pms_chart.data.datasets[0].data = pms_data;
+            pms_chart.update();
+            console.log(pms_data);
+        }
     })
 
     // fetch('/pms')

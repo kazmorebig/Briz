@@ -1,3 +1,4 @@
+import math
 import random
 import time
 import sanic.app
@@ -30,39 +31,43 @@ class Result:
         return dc.asdict(self)
 
 
+class MockedSerial:
+
+    def reset_input_buffer(self):
+        pass
+
+    @property
+    def in_waiting(self):
+        return math.inf
+
+    def read(self, count):
+        return bytearray([random.randint(1, 100) for i in range(count)])
+
+
 class SensorPMS:
     def __init__(self, port, loop=None):
-        self.port = serial.Serial(port, 9500, serial.EIGHTBITS)
+        self.port = MockedSerial() if port == 'mocked' else serial.Serial(port, 9600)
         self.result = None
         self.ax1 = None
-        self.queue = asyncio.queues.Queue(1, loop=loop)
+        self.data_received = asyncio.Event(loop=loop)
 
     def read(self):
         data = self.port.read(32)
-        print('data: ', [f'{d:02x}' for d in data], len(data))
+        # print('data: ', [f'{d:02x}' for d in data], len(data))
         values = [int(f'{i1:02x}{i2:02x}', 16) for i1, i2 in zip(data[::2], data[1::2])]
         self.result = Result(*values[2:14])
-        self.port.reset_input_buffer()
-        return self.result
-
-    def read_mocked(self):
-        time.sleep(0.2)
-        values = [random.randint(1, 100) for i in range(14)]
-        self.result = Result(*values[2:])
 
     async def read_async(self):
-        try:
-            self.queue.get_nowait()
-        except asyncio.QueueEmpty:
-            pass
-        return await self.queue.get()
+        self.data_received.clear()
+        await self.data_received.wait()
+        return self.result
 
     async def read_loop(self):
         self.port.reset_input_buffer()
         while True:
             if self.port.in_waiting >= 32:
-                logger.debug(f'Read loop {self.port.in_waiting}')
-                logger.debug(f'Data recieved')
-                await self.queue.put(self.read())
+                self.read()
+                self.port.reset_input_buffer()
+                self.data_received.set()
             await asyncio.sleep(0.5)
 

@@ -45,22 +45,40 @@ def display(request):
     return response.html(data)
 
 
-@app.route('/triac', methods=['POST'])
+@app.put('/power')
 def set_power(request):
     power = int(request.json['power'])
     power = max(0, min(power, 100))
     vents.set_power(power)
     return response.text('DONE')
 
+@app.get('/power')
+def get_power(request):
+    return response.json(json.dumps({'target_power': vents.target_power, 'real_power': vents.real_power}))
 
-@app.route('/pms')
+
+@app.get('/pms')
 async def pms_handler(request):
     async def read_pms_queue(resp: response.BaseHTTPResponse):
         while True:
-            pms_data = await pms5008.queue.get()
+            pms_data = await pms5008.read_async()
             json_data = json.dumps(pms_data.as_dict())
             await resp.write(json_data)
     return response.stream(read_pms_queue, content_type='application/json')
+
+
+@app.get('/pms/<field>')
+async def pms_history_handler(request, field):
+    pass
+
+
+@app.post('/start_rec')
+async def start_record(request):
+    pass
+
+@app.get('/stop_rec')
+async def stop_record(request):
+    pass
 
 stop_event = asyncio.Event()
 

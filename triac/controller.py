@@ -21,15 +21,14 @@ class Controller:
         self.regulator = angle_regulator
         self.real_power = 0
         self.power_list = [1 - (1 + math.cos(a*math.pi/180))/2 for a in range(180)]
-        print('Power list: ', self.power_list)
-        logger.debug(f'[CONTROLLER] Initialized')
+        logger.debug(f'Initialized')
 
     def set_power(self, power):
         if power == 0:
             self.target_power = 0
         else:
             self.target_power = min(max(power, Controller.MIN_POWER), Controller.MAX_POWER)
-        logger.debug(f'[CONTROLLER] Target power set {self.target_power}')
+        logger.debug(f'Target power set {self.target_power}')
 
     async def daemon(self):
         while True:
@@ -47,7 +46,7 @@ class Controller:
         target_angle = bisect_left(self.power_list, power)
         target_angle = max(0, min(target_angle, 179))
         self.regulator(target_angle)
-        logger.debug(f'[CONTROLLER] Angle set {target_angle}')
+        logger.debug(f'Angle set {target_angle}')
 
 
 vents = Controller(lambda x: scr.VoltageRegulation(1, x))
