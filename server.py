@@ -1,10 +1,12 @@
+import collections
+import itertools
 import os
 
 import sanic
+from copy import deepcopy
 from sanic import Sanic
 import sanic.response as response
 import asyncio
-import logging
 import json
 import time
 import csv
@@ -12,12 +14,13 @@ import csv
 from typing import Optional
 
 from backend import program, Program, ProgramService
+from status import Status
 from sensor_pms import SensorPMS
 from triac.controller import vents
+from sanic.log import logger, LOGGING_CONFIG_DEFAULTS
 
+LOGGING_CONFIG_DEFAULTS['loggers']['sanic.root']['level'] = 'DEBUG'
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 app = Sanic("main")
 pms5008: Optional[SensorPMS] = None
 
@@ -80,6 +83,13 @@ async def start_record(request):
 async def stop_record(request):
     pass
 
+
+@app.get('/status')
+async def status_handler(request: sanic.Request):
+    resp = await request.respond()
+    await Status.instance.add_responder(resp)
+    return resp
+
 stop_event = asyncio.Event()
 
 
@@ -123,10 +133,13 @@ async def stop(request: sanic.Request):
 async def main():
     global pms5008
     pms5008 = SensorPMS('/dev/ttyUSB0', app.loop)
+    Status(app.loop)
+    Status.instance['test'] = 'value'
     await asyncio.gather(
         vents.daemon(),
         program.daemon(),
-        pms5008.read_loop()
+        pms5008.read_loop(),
+        Status.instance.daemon()
     )
 
 app.add_task(main())

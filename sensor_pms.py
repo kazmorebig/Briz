@@ -1,16 +1,15 @@
 import math
 import random
-import time
-import sanic.app
-from http.server import BaseHTTPRequestHandler
 
+import json
 import serial
 import asyncio
-import logging
 import dataclasses as dc
 
+from status import Status
+from sanic.log import logger
 
-logger = logging.getLogger(__name__)
+
 
 @dc.dataclass
 class Result:
@@ -29,6 +28,9 @@ class Result:
 
     def as_dict(self):
         return dc.asdict(self)
+
+    def as_json(self):
+        return json.dumps(self.as_dict())
 
 
 class MockedSerial:
@@ -69,5 +71,6 @@ class SensorPMS:
                 self.read()
                 self.port.reset_input_buffer()
                 self.data_received.set()
+                Status.instance['pms'] = self.result.as_json()
             await asyncio.sleep(0.5)
 

@@ -1,15 +1,15 @@
 import dataclasses as dc
 import json
 import asyncio
-import logging
 
+from sanic.log import logger
 from enum import Enum
 from typing import List, Optional
 from copy import deepcopy
 
 from triac.controller import vents
 
-logger = logging.getLogger(__name__)
+
 
 class ActionType(Enum):
     SET_POWER = 0
