@@ -18,7 +18,6 @@ from status import Status
 from sensor_pms import SensorPMS
 from triac.controller import vents
 from sanic.log import logger, LOGGING_CONFIG_DEFAULTS
-from sanic.websocket import WebSocketProtocol
 
 LOGGING_CONFIG_DEFAULTS['loggers']['sanic.root']['level'] = 'DEBUG'
 
