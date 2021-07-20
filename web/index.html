@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Display</title>
-    <script src="scripts.js"></script>
+    <link href="main.css" rel="stylesheet">
+    <script type="module" src="chart.js"></script>
+    <script type="module" src="scripts.js"></script>
     <script>
         onload = function () {
             document.getElementById('power').addEventListener('change', (e) => {
@@ -17,40 +19,49 @@
     </script>
 </head>
 <body>
-    <div>
-        <label for="power">Power</label>
-        <input type="range" id="power" name="power" min="0" max="100" value="0" style="width: 300px;">
+    <div class="container">
+        <div class="power-range">
+            <label for="power">
+                <p>Power:</p>
+            </label>
+            <input type="range" id="power" name="power" min="0" max="100" value="0" style="width: 300px;">
+        </div>
+        <div class="programm-select">
+            <label for="program">
+                <p>Program:</p>
+            </label>
+            <select class="select"  name="program" id="program" style="width: 150px"></select>
+            <button id="program_start" value="Start">Start</button>
+        </div>
+        <div class="start-form">
+            <form id="run_form" name="run" class="form">
+                <label for="time">Time: </label>
+                <select class="select" id="time" name="time">
+                    <option value="1200">20 minutes</option>
+                    <option value="1800">30 minutes</option>
+                    <option value="2400">40 minutes</option>
+                </select>
+                <label for="power_select">Power:</label>
+                <select class="select"  id="power_select" name="power_select">
+                    <option value="20">20%</option>
+                    <option value="25">25%</option>
+                    <option value="30">30%</option>
+                    <option value="35">35%</option>
+                    <option value="40">40%</option>
+                    <option value="45">45%</option>
+                    <option value="50">50%</option>
+                </select>
+                <div>
+                    <button id="run" type="button">Apply</button>
+                    <button id="stop" type="button" disabled>Stop</button>
+                </div>
+            </form>
+            Remaining time: <label id="remaining_time">0</label>
+        </div>
+        <div class="canvas">
+            <canvas id="pms_info">Your browser does not support the canvas element.</canvas>
+        </div>
     </div>
-    <div>
-        <label for="program">Program</label>
-        <select name="program" id="program" style="width: 150px"></select>
-        <button id="program_start" value="Start">Start</button>
-    </div>
-    <div>
-        <form id="run_form" name="run">
-            <label for="time">Time: </label>
-            <select id="time" name="time">
-                <option value="1200">20 minutes</option>
-                <option value="1800">30 minutes</option>
-                <option value="2400">40 minutes</option>
-            </select>
-            <label for="power_select">Power:</label>
-            <select id="power_select" name="power_select">
-                <option value="20">20%</option>
-                <option value="25">25%</option>
-                <option value="30">30%</option>
-                <option value="35">35%</option>
-                <option value="40">40%</option>
-                <option value="45">45%</option>
-                <option value="50">50%</option>
-            </select>
-            <button id="run" type="button">Apply</button>
-            <button id="stop" type="button" disabled>Stop</button>
-        </form>
-        Remaining time: <label id="remaining_time">0</label>
-    </div>
-    <div>
-        <label id="info">&nbsp;</label>
-    </div>
+
 </body>
 </html>
