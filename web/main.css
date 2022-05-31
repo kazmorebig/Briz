@@ -20,12 +20,12 @@ input {
 button {
     outline: none;
     box-shadow: none;
-    width: 80px;
-    height: 30px;
+    width: 240px;
+    height: 70px;
     border: 1px solid #fff;
     background-color: #367ebd;
     color: #ffffff;
-    font-size: 14px;
+    font-size: 28px;
 }
 
 .container {

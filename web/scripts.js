@@ -20,15 +20,18 @@ window.addEventListener('load', ()=>{
             });
     })
 
-    document.getElementById('run').addEventListener('click', (ev) => {
-        fetch('/start', {
-            method: 'POST',
-            body: new FormData(document.getElementById('run_form'))
-        })
+    document.getElementById('start_record').addEventListener('click', async(ev) => {
+        const response = await fetch('/start_rec')
+        const data = await response.json()
+        console.log(response)
+        console.log(data)
+        document.getElementById('record_id').innerText = data.rec_id;
     });
 
-    document.getElementById('stop').addEventListener('click', async () => {
-        await fetch('/stop');
+    document.getElementById('stop_record').addEventListener('click', async () => {
+        const response = await fetch('/stop_rec');
+        const data = await response.json()
+        document.getElementById('record_id').innerText = data.rec_id;
     })
 
 

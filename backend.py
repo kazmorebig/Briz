@@ -30,6 +30,7 @@ class Program:
     id: int
     name: str
     image: str
+    description: str
     actions: List[Action]
 
     @classmethod

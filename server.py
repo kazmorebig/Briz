@@ -1,6 +1,7 @@
 import collections
 import itertools
 import os
+import dataclasses as dc
 
 import sanic
 from copy import deepcopy
@@ -11,18 +12,22 @@ import json
 import time
 import csv
 
-from typing import Optional
+from typing import Optional, List
 
 from backend import program, Program, ProgramService
 from status import Status
-from sensor_pms import SensorPMS
+from sensor_pms import SensorBasic, SensorSDS
 from triac.controller import vents
 from sanic.log import logger, LOGGING_CONFIG_DEFAULTS
 
 LOGGING_CONFIG_DEFAULTS['loggers']['sanic.root']['level'] = 'DEBUG'
 
 app = Sanic("main")
-pms5008: Optional[SensorPMS] = None
+recording_sensors: List[SensorBasic] = []
+pms5008: Optional[SensorBasic] = None
+pms7003: Optional[SensorBasic] = None
+sds011: Optional[SensorSDS] = None
+record_task = None
 
 
 @app.get('/programs')
@@ -75,13 +80,20 @@ async def pms_history_handler(request, field):
     pass
 
 
-@app.post('/start_rec')
+@app.get('/start_rec')
 async def start_record(request):
-    pass
+    dirs = [int(fname) for fname in os.listdir('logs') if os.path.isdir(f'logs/{fname}')]
+    rec_id = max(dirs) + 1 if dirs else 0
+    os.makedirs(f'logs/{rec_id}')
+    app.add_task(record_loop(rec_id))
+    return response.json({'rec_id': rec_id})
+
 
 @app.get('/stop_rec')
 async def stop_record(request):
-    pass
+    if not stop_event.is_set():
+        stop_event.set()
+    return response.json({'rec_id': ''})
 
 
 @app.websocket('/status')
@@ -92,51 +104,37 @@ async def status_handler(request: sanic.Request, ws):
 stop_event = asyncio.Event()
 
 
-@app.route('/start', methods=['POST'])
-async def start(request: sanic.Request):
-    duration = int(request.form.get('time'))
-    power = int(request.form.get('power_select'))
-    vents.set_power(power)
-    stop_event.clear()
+async def record_loop(rec_id):
+    time = 0
+    for sensor in recording_sensors:
+        with open(f'logs/{rec_id}/{sensor.name}.csv', 'w') as f:
+            csv_writer = csv.DictWriter(f, ['time'] + list(dc.asdict(sensor.result).keys()))
+            csv_writer.writeheader()
 
-    async def read_pms(resp: response.BaseHTTPResponse):
-        log = []
-        remaining_time = duration
-        while remaining_time > 0:
-            if stop_event.is_set():
-                stop_event.clear()
-                break
-            record = {'time': duration - remaining_time, 'power': vents.real_power}
-            pms_result = await pms5008.read_async()
-            record.update(pms_result.as_dict())
-            log.append(record)
-            await resp.write(str(remaining_time))
-            remaining_time -= 1
-            await asyncio.sleep(1.0)
-        with open(f'logs/{round(time.time())}.csv', 'w') as f:
-            writer = csv.DictWriter(f, log[0].keys())
-            writer.writeheader()
-            writer.writerows(log)
-        vents.set_power(0)
-
-    return response.stream(read_pms, content_type='text/plain')
-
-
-@app.get('/stop')
-async def stop(request: sanic.Request):
-    if not stop_event.is_set():
-        stop_event.set()
-    return response.text('')
+    while True:
+        for sensor in recording_sensors:
+            with open(f'logs/{rec_id}/{sensor.name}.csv', 'a') as f:
+                csv.writer(f).writerow([str(time)] + list(dc.asdict(sensor.result).values()))
+        await asyncio.sleep(1.0)
+        time += 1
+        if stop_event.is_set():
+            stop_event.clear()
+            break
 
 
 async def main():
-    global pms5008
-    pms5008 = SensorPMS('/dev/ttyUSB0', app.loop)
+    global pms5008, sds011, pms7003, recording_sensors
+    sds011 = SensorSDS('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.2:1.0-port0', app.loop, '011')
+    pms5008 = SensorBasic('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.3:1.0-port0', app.loop, '5008')
+    pms7003 = SensorBasic('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.4:1.0-port0', app.loop, '7003')
+    recording_sensors += [sds011, pms5008, pms7003]
     Status(app.loop)
     await asyncio.gather(
         vents.daemon(),
         program.daemon(),
         pms5008.read_loop(),
+        pms7003.read_loop(),
+        sds011.read_loop(),
         Status().daemon()
     )
 
