@@ -9,9 +9,14 @@ window.addEventListener('load', ()=>{
             power_range_element.value = status.triac.target
             console.log(status.triac.target);
         }
+        if (status.hasOwnProperty('pms'))
+        {
+            document.getElementById('sensor_pm25').innerText=`PM2.5: ${status.pms.pm25 / 10.0}`
+            document.getElementById('sensor_pm10').innerText=`PM10: ${status.pms.pm100 / 10.0}`
+            console.log(status.pms)
+        }
 
     })
-
 
     power_range_element.addEventListener('change', async (ev) => {
         const response = await fetch('/power', {

@@ -73,7 +73,7 @@ class SensorBasic:
         # print('data: ', [f'{d:02x}' for d in data], len(data))
         values = [int(f'{i1:02x}{i2:02x}', 16) for i1, i2 in zip(data[::2], data[1::2])]
         self.result = ResultPMS(*values[2:14])
-        print(self.name, self.result)
+        # print(self.name, self.result)
 
     async def read_async(self):
         self.data_received.clear()
@@ -102,4 +102,4 @@ class SensorSDS(SensorBasic):
         data = self.port.read(self. BYTES)
         values = [int(f'{i2:02x}{i1:02x}', 16) for i1, i2 in zip(data[::2], data[1::2])]
         self.result = ResultSDS(*values[1:3])
-        print(self.result)
+        # print(self.result)

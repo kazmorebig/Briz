@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Display</title>
     <link href="main.css" rel="stylesheet">
-    <script type="module" src="chart.js"></script>
     <script type="module" src="scripts.js"></script>
 </head>
 <body>
@@ -14,7 +13,7 @@
                 <label for="power">
                     <p>Power:</p>
                 </label>
-                <input type="range" id="power" name="power" min="0" max="40" value="0" style="width: 600px;">
+                <input type="range" id="power" name="power" min="0" max="100" value="0" style="width: 600px;">
                 <output name="value" for="power">0</output>
             </form>
         </div>
@@ -22,7 +21,11 @@
             <button id="start_record" value="Start">Start</button>
             <button id="stop_record" value="Stop">Stop</button>
             <p id="record_id"></p>
-<!--        </div>-->
+        </div>
+        <div>
+            <p id="sensor_pm25">&nbsp;</p><br>
+            <p id="sensor_pm10">&nbsp;</p>
+        </div>
 <!--        <div class="programm-select">-->
 <!--            <label for="program">-->
 <!--                <p>Program:</p>-->
@@ -53,9 +56,9 @@
 <!--            </form>-->
 <!--            Remaining time: <label id="remaining_time">0</label>-->
 <!--        </div>-->
-<!--        <div class="canvas">-->
-<!--            <canvas id="pms_info">Your browser does not support the canvas element.</canvas>-->
-<!--        </div>-->
+        <div class="canvas">
+            <canvas id="pms_info">Your browser does not support the canvas element.</canvas>
+        </div>
     </div>
 
 </body>

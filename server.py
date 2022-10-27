@@ -48,7 +48,7 @@ def run_program(request, program_id):
 
 @app.route('/display')
 def display(request):
-    with open('web/index.html', 'r') as f:
+    with open('static/index.html', 'r') as f:
         data = f.read()
     return response.html(data)
 
@@ -82,9 +82,10 @@ async def pms_history_handler(request, field):
 
 @app.get('/start_rec')
 async def start_record(request):
+    print(os.path.abspath(os.curdir))
     dirs = [int(fname) for fname in os.listdir('logs') if os.path.isdir(f'logs/{fname}')]
     rec_id = max(dirs) + 1 if dirs else 0
-    os.makedirs(f'logs/{rec_id}')
+    os.makedirs(f'./logs/{rec_id}')
     app.add_task(record_loop(rec_id))
     return response.json({'rec_id': rec_id})
 
@@ -125,18 +126,18 @@ async def record_loop(rec_id):
 async def main():
     global pms5008, sds011, pms7003, recording_sensors
     sds011 = SensorSDS('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.2:1.0-port0', app.loop, '011')
-    pms5008 = SensorBasic('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.3:1.0-port0', app.loop, '5008')
-    pms7003 = SensorBasic('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.4:1.0-port0', app.loop, '7003')
+    # pms5008 = SensorBasic('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.3:1.0-port0', app.loop, '5008')
+    # pms7003 = SensorBasic('/dev/serial/by-path/platform-3f980000.usb-usb-0:1.4:1.0-port0', app.loop, '7003')
     recording_sensors += [sds011, pms5008, pms7003]
     Status(app.loop)
     await asyncio.gather(
         vents.daemon(),
         program.daemon(),
-        pms5008.read_loop(),
-        pms7003.read_loop(),
+        #pms5008.read_loop(),
+        #pms7003.read_loop(),
         sds011.read_loop(),
         Status().daemon()
     )
 
 app.add_task(main())
-app.static('/', './web/')
+app.static('/', './static/')

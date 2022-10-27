@@ -9,7 +9,6 @@ from typing import List, Callable, Optional, Tuple, Dict
 from sanic import Sanic
 from sanic.response import BaseHTTPResponse
 from sanic.log import logger
-from sanic.websocket import WebSocketProtocol, WebSocketConnection
 from websockets import ConnectionClosedOK
 
 
@@ -39,7 +38,7 @@ class Status(metaclass=Singleton):
     def __getitem__(self, item):
         raise NotImplementedError('Status items cannot be accessed')
 
-    async def send_async(self, ws: WebSocketConnection):
+    async def send_async(self, ws):
         if len(self._status):
             await ws.send(json.dumps(self._status))
         self.sockets.append(ws)
