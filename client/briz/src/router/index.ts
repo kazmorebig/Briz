@@ -9,9 +9,14 @@ const router = createRouter({
       component: () => import('../views/Main.vue'),
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      path: '/settings',
+      name: 'settings',
+      component: () => import('../views/Settings.vue'),
+    },
+    {
+      path: '/history',
+      name: 'history',
+      component: () => import('../views/SessionsHistory.vue'),
     },
   ],
 });

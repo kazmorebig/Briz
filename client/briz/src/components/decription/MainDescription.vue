@@ -9,10 +9,17 @@ const showModal = ref(false);
 <template>
   <div class="wrapper">
     <h2>{{ $t('main.title') }}</h2>
-    <p>
-      {{ $t('main.desc') }}
-      <n-button quaternary @click="showModal = true">Default</n-button>
-    </p>
+    <div>
+      <span v-html="$t('main.desc')"></span>
+      <n-button
+        size="small"
+        class="display: span"
+        text
+        quaternary
+        @click="showModal = true"
+        >{{ $t('main.buttonTitle') }}</n-button
+      >
+    </div>
   </div>
   <n-modal
     v-model:show="showModal"
@@ -20,9 +27,13 @@ const showModal = ref(false);
     style="width: 600px"
     :title="$t('main.title')"
     aria-modal="true"
+    preset="card"
   >
-    <template #header-extra> Oops! </template>
-    <p>{{ $t('main.desc') }}</p>
+    <p>{{ $t('main.modalTitle') }}</p>
+    <p>{{ $t('main.modalList') }}</p>
+    <li v-for="item of $t('main.modalList')" :key="item">
+      {{ item }}
+    </li>
   </n-modal>
 </template>
 
