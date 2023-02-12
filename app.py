@@ -1,18 +1,43 @@
 import json
+import logging
+from logging.config import dictConfig
 import os.path
 
 import flask
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_sock import Sock
 
 import program
+from triac.controller import Controller
+from program_service import ProgramService
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] [%(module)s]\t\t %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__)
 sock = Sock(app)
+vents = Controller()
+ps = ProgramService(vents)
 
+program_list = []
 if os.path.exists('programs.json'):
     with open('programs.json', 'r') as f:
-        prog_container: program.ProgramContainer = program.ProgramListSchema().load(json.load(f))
+        json_data = json.load(f)
+        prog_container: program.ProgramContainer = program.ProgramListSchema().load(json_data)
+        program_list = json_data.get('programs', [])
 else:
     prog_container = program.ProgramContainer([])
 
@@ -22,15 +47,20 @@ def index():
     return app.send_static_file('index.html')
 
 
+@app.route('/assets/<path:path>')
+def send_report(path):
+    return send_from_directory('static/assets', path)
+
+
 @app.get('/program/list')
 def get_programs():
-    return program.ProgramListSchema().dump(prog_container)
+    return program_list
 
 
-@app.get('/program/<name>')
-def get_program(name):
+@app.get('/program/<int:id>')
+def get_program(id: int):
     try:
-        return program.ProgramSchema().dump(prog_container[name])
+        return program.ProgramSchema().dump(prog_container[id])
     except KeyError:
         return flask.Response("Program not found", status=404)
 
@@ -42,13 +72,10 @@ def add_program():
     return program.ProgramSchema().dump(prog_container[prog])
 
 
-@app.route('/program/run/<name>')
-def run_program(name):
-    prog = prog_container.get(flask.escape(name))
+@app.route('/program/run/<id>')
+def run_program(id):
+    prog = prog_container.get(int(flask.escape(id)))
     if prog is None:
         return flask.Response("Program not found", status=404)
-    return 1
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=8000, host='0.0.0.0')
+    ps.start_program(prog)
+    return flask.Response('1')

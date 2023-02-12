@@ -1,29 +1,28 @@
-import asyncio
 import math
 import logging
+import time
+import threading
 from bisect import bisect_left
-from typing import Callable
 
 from triac.SCR import scr
 
-from status import Status
-
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class Controller:
     MIN_POWER = 10
     MAX_POWER = 100
-    START_DURATION = 7.0
+    START_DURATION = 0.0
     START_POWER = 100
 
-    def __init__(self, angle_regulator: Callable):
+    def __init__(self):
         self.current_power = 0
         self.target_power = 0
-        self.regulator = angle_regulator
+        self.regulator = lambda x: scr.VoltageRegulation(1, x)
         self.real_power = 0
         self.power_list = [1 - (1 + math.cos(a*math.pi/180))/2 for a in range(180)]
         logger.debug(f'Initialized')
+        threading.Thread(target=self.daemon, daemon=True).start()
 
     def set_power(self, power):
         if power == 0:
@@ -33,16 +32,17 @@ class Controller:
         logger.debug(f'Target power set {self.target_power}')
         self.update_status()
 
-    async def daemon(self):
+    def daemon(self):
+        logger.debug(f'Daemon started')
         while True:
             if self.target_power != self.current_power:
-                if self.current_power == 0:
+                if self.current_power == 0 and Controller.START_DURATION:
                     self._set_regulator(Controller.START_POWER)
-                    await asyncio.sleep(Controller.START_DURATION)
+                    time.sleep(Controller.START_DURATION)
                 self._set_regulator(self.target_power)
                 self.current_power = self.target_power
                 self.update_status()
-            await asyncio.sleep(0.1)
+            time.sleep(0.1)
 
     def _set_regulator(self, power):
         self.real_power = power
@@ -54,11 +54,4 @@ class Controller:
         self.update_status()
 
     def update_status(self):
-        Status()['triac'] = {
-            'target': self.target_power,
-            'current': self.current_power,
-            'real': self.real_power
-        }
-
-
-vents = Controller(lambda x: scr.VoltageRegulation(1, x))
+        pass

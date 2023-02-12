@@ -1,8 +1,10 @@
 import collections
 import itertools
 import json
+import operator
+
 import marshmallow as ma
-from typing import List, Dict
+from typing import List, Dict, Union
 
 import os
 import bisect
@@ -12,19 +14,23 @@ class NonUniqueProgramName(ValueError):
     pass
 
 
-class Node:
+class Action:
     def __init__(self, duration, power):
         self.duration = duration
         self.power = power
 
 
 class Program:
-    def __init__(self, name, description, nodes):
+    def __init__(self, id, name, description, actions):
+        self.id = id
         self.name = name
         self.description = description
-        self.nodes: List[Node] = nodes
-        self.duration = sum([n.duration for n in self.nodes])
-        self.node_times = list(itertools.accumulate([n.duration for n in self.nodes]))
+        self.actions: List[Action] = actions
+        self.duration = sum([n.duration for n in self.actions])
+        self.node_times = list(itertools.accumulate([n.duration for n in self.actions]))
+
+    def __str__(self):
+        return self.name
 
     def is_active(self, time):
         return time < self.duration
@@ -32,32 +38,38 @@ class Program:
     def get_power(self, time):
         if 0 <= time < self.duration:
             index = bisect.bisect(self.node_times, time)
-            return self.nodes[index].power
+            return self.actions[index].power
+        return 0
+
+    def get_remaining_time(self, time):
+        if 0 <= time < self.duration:
+            return self.duration - time
         return 0
 
 
 class ProgramContainer(collections.MutableMapping):
     def __init__(self, programs: List[Program]):
-        self._programs: Dict[str, Program] = {p.name: p for p in programs}
+        self.programs = programs
+        self._programs_dict = {p.id: p for p in self.programs}
 
     def add(self, program: Program):
-        if program.name in self:
+        if program.name in {p.name for p in self.programs}:
             raise NonUniqueProgramName(program.name)
-        self._programs[program.name] = program
+        if program.id is None:
+            program.id = max(self._programs_dict.keys()) + 1
+        self.programs[program.id] = program
+        return program
 
     def modify(self, program: Program):
-        if program.name not in self:
-            raise KeyError(program.name)
-        self._programs[program.name] = program
-
-    def remove(self, program: Program):
-        self._programs.pop(program.name)
+        if program.id not in self:
+            raise KeyError(program.id)
+        self.programs[program.id] = program
 
     def __getitem__(self, item):
         if isinstance(item, Program):
-            return self._programs[item.name]
-        elif isinstance(item, str):
-            return self._programs[item]
+            return self.programs[item.id]
+        elif isinstance(item, int):
+            return self.programs[item]
         raise TypeError
 
     def __setitem__(self, key, value):
@@ -67,25 +79,28 @@ class ProgramContainer(collections.MutableMapping):
         raise NotImplementedError('Use explicit method: remove()')
 
     def __iter__(self):
-        return iter(self._programs)
+        return iter(self.programs)
 
     def __len__(self):
-        return len(self._programs)
+        return len(self.programs)
 
 
-class NodeSchema(ma.Schema):
+class ActionSchema(ma.Schema):
+    type = ma.fields.Int(validate=ma.fields.validate.Range(min=0))
     duration = ma.fields.Int(validate=ma.fields.validate.Range(min=0))
-    power = ma.fields.Int(validate=ma.fields.validate.Range(min=0, max=100))
+    value = ma.fields.Int(validate=ma.fields.validate.Range(min=0, max=100))
 
     @ma.post_load
     def make_node(self, data, **kwargs):
-        return Node(**data)
+        if data['type'] == 0:
+            return Action(data['duration'], data['value'])
 
 
 class ProgramSchema(ma.Schema):
+    id = ma.fields.Int()
     name = ma.fields.String(required=True)
     description = ma.fields.String()
-    nodes = ma.fields.Nested(NodeSchema, many=True)
+    actions = ma.fields.Nested(ActionSchema, many=True)
 
     @ma.post_load
     def make_program(self, data, **kwargs):

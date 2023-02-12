@@ -1,65 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <title>Display</title>
-    <link href="main.css" rel="stylesheet">
-    <script type="module" src="scripts.js"></script>
-</head>
-<body>
-    <div class="container">
-        <div class="power-range">
-            <form name="range-form" oninput="value.value = power.valueAsNumber ">
-                <label for="power">
-                    <p>Power:</p>
-                </label>
-                <input type="range" id="power" name="power" min="0" max="100" value="0" style="width: 600px;">
-                <output name="value" for="power">0</output>
-            </form>
-        </div>
-        <div>
-            <button id="start_record" value="Start">Start</button>
-            <button id="stop_record" value="Stop">Stop</button>
-            <p id="record_id"></p>
-        </div>
-        <div>
-            <p id="sensor_pm25">&nbsp;</p><br>
-            <p id="sensor_pm10">&nbsp;</p>
-        </div>
-<!--        <div class="programm-select">-->
-<!--            <label for="program">-->
-<!--                <p>Program:</p>-->
-<!--            </label>-->
-<!--            <select class="select"  name="program" id="program" style="width: 150px"></select>-->
-<!--            <button id="program_start" value="Start">Start</button>-->
-<!--        </div>-->
-<!--        <div class="start-form">-->
-<!--            <form id="run_form" name="run" class="form">-->
-<!--                <label for="time">Time: </label>-->
-<!--                <select class="select" id="time" name="time">-->
-<!--                    <option value="1200">20 minutes</option>-->
-<!--                    <option value="1800">30 minutes</option>-->
-<!--                    <option value="2400">40 minutes</option>-->
-<!--                </select>-->
-<!--                <label for="power_select">Power:</label>-->
-<!--                <select class="select"  id="power_select" name="power_select">-->
-<!--                    <option value="20">20%</option>-->
-<!--                    <option value="25">25%</option>-->
-<!--                    <option value="30">30%</option>-->
-<!--                    <option value="35">35%</option>-->
-<!--                    <option value="40">40%</option>-->
-<!--                </select>-->
-<!--                <div>-->
-<!--                    <button id="run" type="button">Apply</button>-->
-<!--                    <button id="stop" type="button" disabled>Stop</button>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--            Remaining time: <label id="remaining_time">0</label>-->
-<!--        </div>-->
-        <div class="canvas">
-            <canvas id="pms_info">Your browser does not support the canvas element.</canvas>
-        </div>
-    </div>
-
-</body>
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+    <script type="module" crossorigin src="/assets/index-4328658f.js"></script>
+    <link rel="stylesheet" href="/assets/index-f6bbb37a.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    
+  </body>
 </html>

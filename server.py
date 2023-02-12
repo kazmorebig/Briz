@@ -14,7 +14,7 @@ import csv
 
 from typing import Optional, List
 
-from backend import program, Program, ProgramService
+from program_service import program, Program, ProgramService
 from status import Status
 from sensor_pms import SensorBasic, SensorSDS
 from triac.controller import vents
@@ -57,7 +57,7 @@ def display(request):
 def set_power(request):
     power = int(request.json['power'])
     power = max(0, min(power, 100))
-    vents.set_power(power)
+    vents._set_power(power)
     return response.text('DONE')
 
 @app.get('/power')
