@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <p>settings</p>
+  <p>Настройки</p>
 </template>
 
 <style scoped></style>

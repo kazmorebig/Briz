@@ -1,7 +1,7 @@
 export interface Program {
   id: string;
   name: string;
-  image: string;
+  description: string;
   actions: Action[];
 }
 

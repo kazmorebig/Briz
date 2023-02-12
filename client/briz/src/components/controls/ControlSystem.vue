@@ -14,16 +14,19 @@ import { programModule } from '@/components/program/program.module';
 
 const { setState, isActive, stateEnum, isPause, renderCountdown, countdown } =
   controlModule();
-const { sessionPeriod } = programModule();
+const { sessionPeriod, activeProgramId } = programModule();
+console.log('isRun', isActive);
 </script>
 
 <template>
   <div class="wrapper-control">
     <n-button
-      :disabled="!isActive"
+      :disabled="activeProgramId === undefined && !isActive"
       class="btn-control"
       :class="isPause ? 'active' : ''"
-      @click="setState(stateEnum.pause)"
+      @click="
+        setState(isPause ? stateEnum.resume : stateEnum.pause, activeProgramId)
+      "
     >
       <n-icon size="44" color="#ddd" :component="Pause48Regular"> </n-icon>
     </n-button>
@@ -44,8 +47,11 @@ const { sessionPeriod } = programModule();
       </n-text>
     </div>
     <n-button
+      :disabled="activeProgramId === undefined"
       class="btn-control"
-      @click="setState(isActive ? stateEnum.stop : stateEnum.play)"
+      @click="
+        setState(isActive ? stateEnum.stop : stateEnum.run, activeProgramId)
+      "
     >
       <n-icon
         :color="isActive ? '#FF4949' : ''"

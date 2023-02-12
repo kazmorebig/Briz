@@ -1,15 +1,20 @@
 import type { Ref } from 'vue';
-import { readonly, ref } from 'vue';
+import { onMounted, readonly, ref } from 'vue';
 import type { Program, Action } from '@/components/program/program.type';
-import json from '../../mock/settings.json';
+import axios from 'axios';
+import { BASE_API } from '@/base/base-api';
 
 const sessionPeriod: Ref<number> = ref(0);
+const programs: Ref<Program[]> = ref([]);
+const activeProgram: Ref<Program | undefined> = ref();
+const activeProgramId: Ref<string | undefined> = ref();
+const actions: Ref<Action[] | undefined> = ref();
 
 export function programModule() {
-  const programs: Ref<Program[]> = ref(json as unknown as Program[]);
-  const activeProgram: Ref<Program | undefined> = ref();
-  const actions: Ref<Action[] | undefined> = ref();
-  //const sessionPeriod: Ref<number> = ref(0);
+  onMounted(async () => {
+    const getPrograms = await axios.get(BASE_API + 'program/list');
+    programs.value = getPrograms.data;
+  });
 
   function isActive(id: string): boolean {
     if (!activeProgram.value) return false;
@@ -22,11 +27,13 @@ export function programModule() {
     sessionPeriod.value = actions.value
       ? actions.value.reduce((acc, a) => acc + a.duration, 0)
       : 0;
+    activeProgramId.value = activeProgram.value?.id;
   }
 
   return {
     programs,
     activeProgram,
+    activeProgramId,
     isActive,
     setActive,
     sessionPeriod: readonly(sessionPeriod),

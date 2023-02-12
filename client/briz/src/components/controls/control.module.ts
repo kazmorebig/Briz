@@ -1,37 +1,22 @@
 import type { Ref } from 'vue';
 import { computed, h, ref } from 'vue';
 import type { CountdownInst, CountdownProps } from 'naive-ui';
+import axios from 'axios';
+import { BASE_API } from '@/base/base-api';
 
 export enum stateEnum {
   'pause' = 'pause',
-  'play' = 'play',
+  'resume' = 'resume',
+  'run' = 'run',
   'stop' = 'stop',
 }
 
-export type state = 'pause' | 'play' | 'stop';
+export type state = 'pause' | 'resume' | 'run' | 'stop';
+
+const state: Ref<state> = ref(stateEnum.stop);
+const countdownRef = ref<CountdownInst | null>();
 
 export function controlModule() {
-  const state: Ref<state> = ref(stateEnum.stop);
-
-  const isActive = computed(
-    () => state.value === stateEnum.play || state.value === stateEnum.pause
-  );
-
-  const isPause = computed(() => state.value === stateEnum.pause);
-
-  function setState(value: state) {
-    state.value = value;
-    if (state.value === stateEnum.stop) {
-      handleReset();
-    }
-  }
-
-  const countdownRef = ref<CountdownInst | null>();
-
-  function handleReset() {
-    countdownRef.value?.reset();
-  }
-
   const renderCountdown: CountdownProps['render'] = ({
     hours,
     minutes,
@@ -62,6 +47,25 @@ export function controlModule() {
       ),
     ];
   };
+
+  const isActive = computed(
+    () => state.value === stateEnum.run || state.value === stateEnum.pause
+  );
+
+  const isPause = computed(() => state.value === stateEnum.pause);
+
+  function setState(value: state, programId: string) {
+    axios.get(BASE_API + `program/${value}/${programId}`).then(() => {
+      state.value = value;
+      if (state.value === stateEnum.stop) {
+        handleReset();
+      }
+    });
+  }
+
+  function handleReset() {
+    countdownRef.value?.reset();
+  }
 
   return {
     state,
