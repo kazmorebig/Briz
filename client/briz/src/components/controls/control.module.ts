@@ -54,7 +54,8 @@ export function controlModule() {
 
   const isPause = computed(() => state.value === stateEnum.pause);
 
-  function setState(value: state, programId: string) {
+  function setState(value: state, programId: string | undefined) {
+    if (!programId) return;
     axios.get(BASE_API + `program/${value}/${programId}`).then(() => {
       state.value = value;
       if (state.value === stateEnum.stop) {
