@@ -6,6 +6,7 @@ import os.path
 import flask
 from flask import Flask, request, send_from_directory
 from flask_sock import Sock
+from flask_cors import CORS
 
 import program
 from triac.controller import Controller
@@ -28,6 +29,7 @@ dictConfig({
 })
 
 app = Flask(__name__)
+CORS(app)
 sock = Sock(app)
 vents = Controller()
 ps = ProgramService(vents)
@@ -78,4 +80,22 @@ def run_program(id):
     if prog is None:
         return flask.Response("Program not found", status=404)
     ps.start_program(prog)
+    return flask.Response('1')
+
+
+@app.route('/program/stop/<id>')
+def stop_program(id):
+    ps.stop_program()
+    return flask.Response('1')
+
+
+@app.route('/program/pause/<id>')
+def pause_program(id):
+    ps.pause_program()
+    return flask.Response('1')
+
+
+@app.route('/program/resume/<id>')
+def resume_program(id):
+    ps.resume_program()
     return flask.Response('1')
