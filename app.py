@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 from logging.config import dictConfig
 import os.path
 
@@ -52,6 +53,13 @@ def index():
 @app.route('/assets/<path:path>')
 def send_report(path):
     return send_from_directory('static/assets', path)
+
+
+@sock.route('/status')
+def status_sock(ws):
+    while True:
+        ws.send(ps.get_status())
+        time.sleep(1.0)
 
 
 @app.get('/program/list')

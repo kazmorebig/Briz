@@ -30,6 +30,15 @@ class ProgramService:
                     self.stop_program()
             time.sleep(1)
 
+    def get_status(self):
+        status = {
+            'program_status': 'stopped' if self.current_program is None else 'running' if not self.paused else 'paused',
+            'program_id': self.current_program.id if self.current_program is not None else -1,
+            'elapsed_time': self.elapsed_time,
+            'current_power': self.vents.target_power
+        }
+        return json.dumps(status)
+
     def _set_power(self, power):
         if self.vents.target_power != power:
             logger.debug(f'Change power to {power}')
