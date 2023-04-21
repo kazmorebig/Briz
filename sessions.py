@@ -27,11 +27,11 @@ class Sessions:
                 writer.writerow(tuple(s))
 
     def start(self, program_name='Unknown'):
-        self.current_session = [program_name, time.time()]
+        self.current_session = [program_name, int(time.time())]
 
     def stop(self):
         if self.current_session is not None:
-            self.current_session.append(time.time())
+            self.current_session.append(int(time.time()))
             self.sessions.append(Sessions.Session(*self.current_session))
             self.write()
             self.current_session = None
