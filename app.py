@@ -61,6 +61,11 @@ def status_sock(ws):
         ws.send(status_json)
 
 
+@app.get('/sessions')
+def get_sessions():
+    return ps.get_sessions()
+
+
 @app.get('/program/list')
 def get_programs():
     return program_list

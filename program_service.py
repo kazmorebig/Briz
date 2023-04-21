@@ -1,12 +1,12 @@
-import dataclasses as dc
 import json
 import time
 import logging
 import threading
 
-from typing import List, Optional
+from typing import Optional
 
-from program import Program, Action
+from program import Program
+from sessions import Sessions
 
 logger = logging.getLogger()
 
@@ -14,6 +14,7 @@ logger = logging.getLogger()
 class ProgramService:
     def __init__(self, vents):
         self.current_program: Optional[Program] = None
+        self.sessions = Sessions()
         self.elapsed_time = 0
         self.paused = False
         self.vents = vents
@@ -43,12 +44,14 @@ class ProgramService:
 
     def status_generator(self):
         prev_status = None
-        while True:
-            self.daemon_tick.wait()
+        while self.daemon_tick.wait():
             new_status = self.get_status()
             if new_status != prev_status:
                 prev_status = new_status
                 yield new_status
+
+    def get_sessions(self):
+        return self.sessions.json()
 
     def _set_power(self, power):
         if self.vents.target_power != power:
@@ -59,12 +62,15 @@ class ProgramService:
         logger.debug(f'Start {self.current_program}')
         self.stop_program()
         self.current_program = program
+        self.sessions.start(self.current_program.name)
 
     def stop_program(self):
         logger.debug(f'Stop {self.current_program}')
         self._set_power(0)
         self.elapsed_time = 0
         self.current_program = None
+        self.paused = False
+        self.sessions.stop()
 
     def pause_program(self):
         logger.debug(f'Pause {self.current_program}')
