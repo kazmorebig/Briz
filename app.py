@@ -57,9 +57,8 @@ def send_report(path):
 
 @sock.route('/status')
 def status_sock(ws):
-    while True:
-        ws.send(ps.get_status())
-        time.sleep(1.0)
+    for status_json in ps.status_generator():
+        ws.send(status_json)
 
 
 @app.get('/program/list')

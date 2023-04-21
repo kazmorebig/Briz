@@ -18,6 +18,7 @@ class ProgramService:
         self.paused = False
         self.vents = vents
         logger.debug(f'Service init')
+        self.daemon_tick = threading.Event()
         threading.Thread(target=self.daemon, daemon=True).start()
 
     def daemon(self):
@@ -28,6 +29,7 @@ class ProgramService:
                 self._set_power(self.current_program.get_power(self.elapsed_time))
                 if not self.current_program.is_active(self.elapsed_time):
                     self.stop_program()
+            self.daemon_tick.set()
             time.sleep(1)
 
     def get_status(self):
@@ -38,6 +40,15 @@ class ProgramService:
             'current_power': self.vents.target_power
         }
         return json.dumps(status)
+
+    def status_generator(self):
+        prev_status = None
+        while True:
+            self.daemon_tick.wait()
+            new_status = self.get_status()
+            if new_status != prev_status:
+                prev_status = new_status
+                yield new_status
 
     def _set_power(self, power):
         if self.vents.target_power != power:
