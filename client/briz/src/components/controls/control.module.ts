@@ -1,8 +1,8 @@
 import type { Ref } from 'vue';
 import { computed, h, ref } from 'vue';
 import type { CountdownInst, CountdownProps } from 'naive-ui';
-import axios from 'axios';
-import { BASE_API } from '@/base/base-api';
+import { API_URL } from '@/base/api-url';
+import { useGet } from '@/base/base-action.service';
 
 export enum stateEnum {
   'pause' = 'pause',
@@ -55,8 +55,11 @@ export function controlModule() {
   const isPause = computed(() => state.value === stateEnum.pause);
 
   function setState(value: state, programId: string | undefined) {
-    if (!programId) return;
-    axios.get(BASE_API + `program/${value}/${programId}`).then(() => {
+    if (programId === undefined) return;
+    useGet(
+      API_URL.SET_STATE_BY_ID(value, programId),
+      'Ошибка при установке статуса'
+    ).then(() => {
       state.value = value;
       if (state.value === stateEnum.stop) {
         handleReset();

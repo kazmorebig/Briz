@@ -11,11 +11,13 @@ import {
 } from '@vicons/fluent';
 import { controlModule } from '@/components/controls/control.module';
 import { programModule } from '@/components/program/program.module';
+import { setWebSocket } from '@/components/program/websocket.module';
 
 const { setState, isActive, stateEnum, isPause, renderCountdown, countdown } =
   controlModule();
 const { sessionPeriod, activeProgramId } = programModule();
-console.log('isRun', isActive);
+
+const { websocketData, elapsedTime } = setWebSocket();
 </script>
 
 <template>
@@ -32,7 +34,6 @@ console.log('isRun', isActive);
     </n-button>
     <div class="title-control">
       <n-p type="default">{{ $t('control.title') }}</n-p>
-
       <n-text
         :type="isActive ? 'error' : 'default'"
         style="font-size: 4rem; font-weight: bold"
@@ -40,7 +41,7 @@ console.log('isRun', isActive);
       >
         <n-countdown
           ref="countdown"
-          :duration="sessionPeriod * 1000"
+          :duration="(sessionPeriod - elapsedTime) * 1000"
           :active="isActive && !isPause"
           :render="renderCountdown"
         />
