@@ -11,23 +11,31 @@ import {
 } from '@vicons/fluent';
 import { controlModule } from '@/components/controls/control.module';
 import { programModule } from '@/components/program/program.module';
-import { setWebSocket } from '@/components/program/websocket.module';
+import { setWebSocket } from '@/service/websocket/websocket.module';
 
-const { setState, isActive, stateEnum, isPause, renderCountdown, countdown } =
-  controlModule();
+const {
+  setState,
+  isActivated,
+  isStopped,
+  isPaused,
+  isResumed,
+  stateEnum,
+  renderCountdown,
+  countdown,
+} = controlModule();
 const { sessionPeriod, activeProgramId } = programModule();
 
-const { websocketData, elapsedTime } = setWebSocket();
+const { elapsedTime } = setWebSocket();
 </script>
 
 <template>
   <div class="wrapper-control">
     <n-button
-      :disabled="activeProgramId === undefined && !isActive"
+      :disabled="activeProgramId === undefined && (!isActivated || isStopped)"
       class="btn-control"
-      :class="isPause ? 'active' : ''"
+      :class="isPaused ? 'active' : ''"
       @click="
-        setState(isPause ? stateEnum.resume : stateEnum.pause, activeProgramId)
+        setState(isPaused ? stateEnum.resume : stateEnum.pause, activeProgramId)
       "
     >
       <n-icon size="44" color="#ddd" :component="Pause48Regular"> </n-icon>
@@ -42,7 +50,7 @@ const { websocketData, elapsedTime } = setWebSocket();
         <n-countdown
           ref="countdown"
           :duration="(sessionPeriod - elapsedTime) * 1000"
-          :active="isActive && !isPause"
+          :active="false"
           :render="renderCountdown"
         />
       </n-text>
@@ -51,13 +59,20 @@ const { websocketData, elapsedTime } = setWebSocket();
       :disabled="activeProgramId === undefined"
       class="btn-control"
       @click="
-        setState(isActive ? stateEnum.stop : stateEnum.run, activeProgramId)
+        setState(
+          isActivated || isPaused || isResumed ? stateEnum.stop : stateEnum.run,
+          activeProgramId
+        )
       "
     >
       <n-icon
-        :color="isActive ? '#FF4949' : ''"
-        :size="isActive ? '44' : '60'"
-        :component="isActive ? Stop20Regular : CaretRight20Regular"
+        :color="isActivated || isPaused || isResumed ? '#FF4949' : ''"
+        :size="isActivated || isPaused || isResumed ? '44' : '60'"
+        :component="
+          isActivated || isPaused || isResumed
+            ? Stop20Regular
+            : CaretRight20Regular
+        "
       >
       </n-icon>
     </n-button>

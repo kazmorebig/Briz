@@ -1,4 +1,5 @@
-import axios, { AxiosError, type AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { reactive, toRefs } from 'vue';
 import { correspondingAPI } from '@/base/corresponding-api.service';
 
@@ -26,7 +27,7 @@ export default async function useFetch<T>(
       state.data = response.data;
       state.error = null;
       state.loading = true;
-      message.success(successMessage ?? 'Успешное выполнение запроса');
+      //message.success(successMessage ?? 'Успешное выполнение запроса');
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         state.error = error.message;

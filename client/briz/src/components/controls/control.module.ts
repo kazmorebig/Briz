@@ -48,11 +48,13 @@ export function controlModule() {
     ];
   };
 
-  const isActive = computed(
-    () => state.value === stateEnum.run || state.value === stateEnum.pause
-  );
+  const isActivated = computed(() => state.value === stateEnum.run);
 
-  const isPause = computed(() => state.value === stateEnum.pause);
+  const isPaused = computed(() => state.value === stateEnum.pause);
+
+  const isResumed = computed(() => state.value === stateEnum.resume);
+
+  const isStopped = computed(() => state.value === stateEnum.stop);
 
   function setState(value: state, programId: string | undefined) {
     if (programId === undefined) return;
@@ -67,6 +69,10 @@ export function controlModule() {
     });
   }
 
+  function setStateWebsocket(value: state) {
+    state.value = value;
+  }
+
   function handleReset() {
     countdownRef.value?.reset();
   }
@@ -74,11 +80,14 @@ export function controlModule() {
   return {
     state,
     setState,
-    isActive,
-    isPause,
+    isActivated,
+    isPaused,
+    isResumed,
+    isStopped,
     stateEnum,
     renderCountdown,
     handleReset,
     countdown: countdownRef,
+    setStateWebsocket,
   };
 }

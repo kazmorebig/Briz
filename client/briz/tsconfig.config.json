@@ -24,6 +24,10 @@
     "declaration ": true,
     "resolveJsonModule": true,
     "lib": ["esnext", "dom"],
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "importsNotUsedAsValues": "error",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false
   }
 }

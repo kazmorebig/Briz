@@ -3,10 +3,8 @@ import { programModule } from '@/components/program/program.module';
 import ProgramItem from '@/components/program/ProgramItem.vue';
 import { NSpace } from 'naive-ui/es/space';
 import { NLayout, NLayoutSider } from 'naive-ui';
-import { controlModule } from '@/components/controls/control.module';
 
-const { programs, isActive, setActive } = programModule();
-const { isActive: isRun, state } = controlModule();
+const { programs, isActive, setActiveById } = programModule();
 </script>
 
 <template>
@@ -21,7 +19,7 @@ const { isActive: isRun, state } = controlModule();
             :key="program.id"
             style="margin-bottom: 10px; cursor: pointer"
             :active="isActive(program.id)"
-            @click="setActive(program)"
+            @click="setActiveById(program.id)"
           ></ProgramItem>
         </n-layout-sider>
       </n-layout>

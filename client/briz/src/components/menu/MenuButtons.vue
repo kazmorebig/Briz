@@ -13,7 +13,7 @@ import { NSpace } from 'naive-ui/es/space';
       target="_self"
       type="primary"
     >
-      {{ $t('history.link') }}
+      {{ $t('history.title') }}
     </n-button>
     <n-button
       class="menu-button"
@@ -23,7 +23,7 @@ import { NSpace } from 'naive-ui/es/space';
       target="_self"
       type="primary"
     >
-      {{ $t('session.link') }}
+      {{ $t('session.title') }}
     </n-button>
   </n-space>
 </template>

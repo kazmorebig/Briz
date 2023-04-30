@@ -17,13 +17,17 @@ export const messages = {
       title: 'До окончания сеанса',
     },
     session: {
-      link: 'Журнал сеансов',
+      title: 'Журнал сеансов',
+      sort: 'по времени',
     },
     history: {
-      link: 'Настройки',
+      title: 'Настройки',
     },
     program: {
       title: 'Выбор режима',
+    },
+    base: {
+      backButton: 'Назад',
     },
   },
   kz: {
