@@ -2,7 +2,7 @@ import type { Ref } from 'vue';
 import { computed, h, ref } from 'vue';
 import type { CountdownInst, CountdownProps } from 'naive-ui';
 import { API_URL } from '@/base/api-url';
-import { useGet } from '@/base/base-action.service';
+import BaseActionService from '@/base/base-action.service';
 
 export enum stateEnum {
   'pause' = 'pause',
@@ -58,8 +58,9 @@ export function controlModule() {
 
   function setState(value: state, programId: string | undefined) {
     if (programId === undefined) return;
-    useGet(
+    BaseActionService.get(
       API_URL.SET_STATE_BY_ID(value, programId),
+      {},
       'Ошибка при установке статуса'
     ).then(() => {
       state.value = value;
