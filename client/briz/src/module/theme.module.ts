@@ -18,7 +18,8 @@ export function theme() {
     Button: {
       textColor: '#fff',
       colorHover: '#6F6F6F',
-      textColorHover: '#6F6F6F',
+      colorQuaternaryHover: 'transparent',
+      textColorHover: '#fff',
       textColorFocus: '#6F6F6F',
       textColorTextHover: '#6F6F6F',
       border: 'none',
@@ -57,7 +58,19 @@ export function theme() {
       borderColor: '#1E1E1E',
       borderRadius: '10px',
     },
+    DataTable: {
+      borderRadius: '10px',
+      borderColor: '#1E1E1E',
+      thTextColor: '#6E6E6E',
+    },
+    DatePicker: {
+      itemFontSize: '14px',
+      calendarDaysFontSize: '16px',
+      calendarTitleFontSize: '18px',
+      panelColor: '#1E1E1E',
+    },
   };
+
   const lightThemeOverrides: GlobalThemeOverrides = {
     common: {
       primaryColor: '#FF8C00',
@@ -67,5 +80,6 @@ export function theme() {
       textColor: '#FF0000',
     },
   };
+
   return { darkThemeOverrides, lightThemeOverrides };
 }

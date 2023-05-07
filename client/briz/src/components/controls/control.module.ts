@@ -1,8 +1,8 @@
 import type { Ref } from 'vue';
 import { computed, h, ref } from 'vue';
 import type { CountdownInst, CountdownProps } from 'naive-ui';
-import axios from 'axios';
-import { BASE_API } from '@/base/base-api';
+import { API_URL } from '@/base/api-url';
+import BaseActionService from '@/base/base-action.service';
 
 export enum stateEnum {
   'pause' = 'pause',
@@ -48,20 +48,31 @@ export function controlModule() {
     ];
   };
 
-  const isActive = computed(
-    () => state.value === stateEnum.run || state.value === stateEnum.pause
-  );
+  const isActivated = computed(() => state.value === stateEnum.run);
 
-  const isPause = computed(() => state.value === stateEnum.pause);
+  const isPaused = computed(() => state.value === stateEnum.pause);
 
-  function setState(value: state, programId: string | undefined) {
-    if (!programId) return;
-    axios.get(BASE_API + `program/${value}/${programId}`).then(() => {
+  const isResumed = computed(() => state.value === stateEnum.resume);
+
+  const isStopped = computed(() => state.value === stateEnum.stop);
+
+  function setState(value: state, programId: number | undefined) {
+    if (programId === undefined) return;
+    BaseActionService.get(
+      API_URL.SET_STATE_BY_ID(value, programId),
+      {},
+      undefined,
+      'Ошибка при установке статуса'
+    ).then(() => {
       state.value = value;
       if (state.value === stateEnum.stop) {
         handleReset();
       }
     });
+  }
+
+  function setStateWebsocket(value: state) {
+    state.value = value;
   }
 
   function handleReset() {
@@ -71,11 +82,14 @@ export function controlModule() {
   return {
     state,
     setState,
-    isActive,
-    isPause,
+    isActivated,
+    isPaused,
+    isResumed,
+    isStopped,
     stateEnum,
     renderCountdown,
     handleReset,
     countdown: countdownRef,
+    setStateWebsocket,
   };
 }

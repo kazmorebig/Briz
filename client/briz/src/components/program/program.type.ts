@@ -1,5 +1,5 @@
 export interface Program {
-  id: string;
+  id: number;
   name: string;
   description: string;
   actions: Action[];

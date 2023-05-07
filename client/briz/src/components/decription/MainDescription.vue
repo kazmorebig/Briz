@@ -2,16 +2,19 @@
 import { NButton } from 'naive-ui/es/button';
 import { NModal } from 'naive-ui/es/modal';
 import { ref } from 'vue';
+import { programModule } from '@/components/program/program.module';
 
 const showModal = ref(false);
+const { programDescription } = programModule();
 </script>
 
 <template>
   <div class="wrapper">
     <h2>{{ $t('main.title') }}</h2>
     <div>
-      <span v-html="$t('main.desc')"></span>
+      <p>{{ programDescription }}</p>
       <n-button
+        v-if="programDescription"
         size="small"
         class="display: span"
         text
@@ -29,17 +32,13 @@ const showModal = ref(false);
     aria-modal="true"
     preset="card"
   >
-    <p>{{ $t('main.modalTitle') }}</p>
-    <p>{{ $t('main.modalList') }}</p>
-    <li v-for="item of $t('main.modalList')" :key="item">
-      {{ item }}
-    </li>
+    <p>{{ programDescription }}</p>
   </n-modal>
 </template>
 
 <style lang="scss" scoped>
 .wrapper {
-  width: 616px;
+  width: 100%;
 
   h2 {
     text-align: center;

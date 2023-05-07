@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import { NConfigProvider, darkTheme } from 'naive-ui';
+import { NConfigProvider, darkTheme, NMessageProvider } from 'naive-ui';
 import { theme } from '@/module/theme.module';
 import { ref } from 'vue';
+import { ruRU, dateRuRU } from 'naive-ui';
+
 const { darkThemeOverrides, lightThemeOverrides } = theme();
 
 const mainTheme = ref(darkTheme);
@@ -14,9 +16,12 @@ const mainTheme = ref(darkTheme);
     :theme-overrides="
       mainTheme === null ? lightThemeOverrides : darkThemeOverrides
     "
+    :date-locale="dateRuRU"
+    :locale="ruRU"
   >
+    <n-message-provider> </n-message-provider>
     <div class="wrapper">
-      <div id="app" class="dark">
+      <div class="dark">
         <RouterView />
       </div>
     </div>

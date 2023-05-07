@@ -1,1 +1,0 @@
-import{_ as e}from"./_plugin-vue_export-helper-c27b6911.js";import{ac as o,ad as r}from"./index-790517e3.js";const c={};function s(t,n){return o(),r("p",null,"Журнал Сеансов")}const f=e(c,[["render",s]]);export{f as default};

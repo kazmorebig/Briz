@@ -11,37 +11,46 @@ import {
 } from '@vicons/fluent';
 import { controlModule } from '@/components/controls/control.module';
 import { programModule } from '@/components/program/program.module';
+import { setWebSocket } from '@/service/websocket/websocket.module';
 
-const { setState, isActive, stateEnum, isPause, renderCountdown, countdown } =
-  controlModule();
+const {
+  setState,
+  isActivated,
+  isStopped,
+  isPaused,
+  isResumed,
+  stateEnum,
+  renderCountdown,
+  countdown,
+} = controlModule();
 const { sessionPeriod, activeProgramId } = programModule();
-console.log('isRun', isActive);
+
+const { elapsedTime } = setWebSocket();
 </script>
 
 <template>
   <div class="wrapper-control">
     <n-button
-      :disabled="activeProgramId === undefined && !isActive"
+      :disabled="activeProgramId === undefined && (!isActivated || isStopped)"
       class="btn-control"
-      :class="isPause ? 'active' : ''"
+      :class="isPaused ? 'active' : ''"
       @click="
-        setState(isPause ? stateEnum.resume : stateEnum.pause, activeProgramId)
+        setState(isPaused ? stateEnum.resume : stateEnum.pause, activeProgramId)
       "
     >
       <n-icon size="44" color="#ddd" :component="Pause48Regular"> </n-icon>
     </n-button>
     <div class="title-control">
       <n-p type="default">{{ $t('control.title') }}</n-p>
-
       <n-text
-        :type="isActive ? 'error' : 'default'"
+        :type="isActivated ? 'error' : 'default'"
         style="font-size: 4rem; font-weight: bold"
         depth="3"
       >
         <n-countdown
           ref="countdown"
-          :duration="sessionPeriod * 1000"
-          :active="isActive && !isPause"
+          :duration="(sessionPeriod - elapsedTime) * 1000"
+          :active="false"
           :render="renderCountdown"
         />
       </n-text>
@@ -50,13 +59,20 @@ console.log('isRun', isActive);
       :disabled="activeProgramId === undefined"
       class="btn-control"
       @click="
-        setState(isActive ? stateEnum.stop : stateEnum.run, activeProgramId)
+        setState(
+          isActivated || isPaused || isResumed ? stateEnum.stop : stateEnum.run,
+          activeProgramId
+        )
       "
     >
       <n-icon
-        :color="isActive ? '#FF4949' : ''"
-        :size="isActive ? '44' : '60'"
-        :component="isActive ? Stop20Regular : CaretRight20Regular"
+        :color="isActivated || isPaused || isResumed ? '#FF4949' : ''"
+        :size="isActivated || isPaused || isResumed ? '44' : '60'"
+        :component="
+          isActivated || isPaused || isResumed
+            ? Stop20Regular
+            : CaretRight20Regular
+        "
       >
       </n-icon>
     </n-button>
@@ -69,8 +85,6 @@ console.log('isRun', isActive);
 }
 .wrapper-control {
   display: flex;
-  height: 120px;
-  width: 596px;
   justify-content: space-between;
   align-items: center;
   margin: 3.5rem 0;
