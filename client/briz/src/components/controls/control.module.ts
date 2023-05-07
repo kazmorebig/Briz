@@ -56,11 +56,12 @@ export function controlModule() {
 
   const isStopped = computed(() => state.value === stateEnum.stop);
 
-  function setState(value: state, programId: string | undefined) {
+  function setState(value: state, programId: number | undefined) {
     if (programId === undefined) return;
     BaseActionService.get(
       API_URL.SET_STATE_BY_ID(value, programId),
       {},
+      undefined,
       'Ошибка при установке статуса'
     ).then(() => {
       state.value = value;

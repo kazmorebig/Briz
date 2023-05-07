@@ -70,6 +70,7 @@ export function theme() {
       panelColor: '#1E1E1E',
     },
   };
+
   const lightThemeOverrides: GlobalThemeOverrides = {
     common: {
       primaryColor: '#FF8C00',
@@ -79,5 +80,6 @@ export function theme() {
       textColor: '#FF0000',
     },
   };
+
   return { darkThemeOverrides, lightThemeOverrides };
 }

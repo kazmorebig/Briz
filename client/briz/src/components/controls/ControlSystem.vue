@@ -43,7 +43,7 @@ const { elapsedTime } = setWebSocket();
     <div class="title-control">
       <n-p type="default">{{ $t('control.title') }}</n-p>
       <n-text
-        :type="isActive ? 'error' : 'default'"
+        :type="isActivated ? 'error' : 'default'"
         style="font-size: 4rem; font-weight: bold"
         depth="3"
       >
@@ -85,8 +85,6 @@ const { elapsedTime } = setWebSocket();
 }
 .wrapper-control {
   display: flex;
-  height: 120px;
-  width: 596px;
   justify-content: space-between;
   align-items: center;
   margin: 3.5rem 0;

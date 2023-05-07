@@ -25,6 +25,8 @@ export const messages = {
     },
     program: {
       title: 'Выбор режима',
+      edit: 'Редактировать',
+      create: 'Создать',
     },
     base: {
       backButton: 'Назад',
