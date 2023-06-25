@@ -24,9 +24,9 @@ const { programs, isActive, setActiveById, openProgramCreation } =
           content-style="padding-top: 24px; padding-right: 15px"
         >
           <ProgramItem
-            v-for="program of programs"
+            v-for="(program, index) of programs"
             :item="program"
-            :key="program.id"
+            :key="index"
             style="margin-bottom: 10px; cursor: pointer"
             :active="isActive(program.id)"
             @click="setActiveById(program.id)"
