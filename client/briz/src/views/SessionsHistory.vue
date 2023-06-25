@@ -30,6 +30,9 @@ const { columns, pagination } = dataTableModule();
     :data="sessionHistory"
     :columns="columns"
     :pagination="pagination"
+    flex-height
+    max-height="450"
+    :style="{ height: `450px` }"
   >
   </data-table>
   <back-button :link="'/'"></back-button>

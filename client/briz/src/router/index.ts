@@ -18,6 +18,16 @@ const router = createRouter({
       name: 'history',
       component: () => import('../views/SessionsHistory.vue'),
     },
+    {
+      path: '/create',
+      name: 'create-program',
+      component: () => import('../views/ProgramCreate.vue'),
+    },
+    {
+      path: '/edit/:id',
+      name: 'edit-program',
+      component: () => import('../views/ProgramEdit.vue'),
+    },
   ],
 });
 

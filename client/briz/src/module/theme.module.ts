@@ -62,6 +62,8 @@ export function theme() {
       borderRadius: '10px',
       borderColor: '#1E1E1E',
       thTextColor: '#6E6E6E',
+      fontSizeLarge: '16px',
+      fontSizeMedium: '16px',
     },
     DatePicker: {
       itemFontSize: '14px',

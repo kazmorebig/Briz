@@ -8,6 +8,10 @@ import router from './router';
 import './assets/main.css';
 import { createI18n } from 'vue-i18n';
 import { messages } from '@/messages/messages';
+import { UserService } from '@/core/user.service';
+const { getAdminStatus } = UserService();
+
+getAdminStatus();
 
 const app = createApp(App);
 

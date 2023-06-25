@@ -38,7 +38,7 @@ const { programDescription } = programModule();
 
 <style lang="scss" scoped>
 .wrapper {
-  width: 100%;
+  width: 616px;
 
   h2 {
     text-align: center;

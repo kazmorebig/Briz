@@ -10,6 +10,7 @@ export function dataTableModule() {
       render: (_, index) => {
         return `${index + 1}`;
       },
+      width: 50,
     },
     {
       title: 'Дата',
@@ -36,7 +37,7 @@ export function dataTableModule() {
     },
   ];
 
-  const pagination: PaginationProps = { pageSize: 5 };
+  const pagination: PaginationProps = { pageSize: 7 };
 
   return {
     pagination,

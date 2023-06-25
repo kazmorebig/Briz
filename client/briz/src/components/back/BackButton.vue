@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui';
+import { NButton, NIcon } from 'naive-ui';
 import back from '/src/assets/svg/back.svg';
 const props = defineProps<{
   link: string;
@@ -22,5 +22,6 @@ const props = defineProps<{
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 </style>
