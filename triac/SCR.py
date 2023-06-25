@@ -10,7 +10,7 @@ libdir = os.path.dirname(os.path.realpath(__file__))
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
-import config
+import triac.config as config
 
 CH_EN=[0x57,0x68,0x02,0x00,0x00,0x00]
 

@@ -12,6 +12,7 @@ from flask_cors import CORS
 import program
 from triac.controller import Controller
 from program_service import ProgramService
+from server_config import Configuration
 
 dictConfig({
     'version': 1,
@@ -34,13 +35,12 @@ CORS(app)
 sock = Sock(app)
 vents = Controller()
 ps = ProgramService(vents)
+config = Configuration()
 
-program_list = []
 if os.path.exists('programs.json'):
     with open('programs.json', 'r') as f:
         json_data = json.load(f)
         prog_container: program.ProgramContainer = program.ProgramListSchema().load(json_data)
-        program_list = json_data.get('programs', [])
 else:
     prog_container = program.ProgramContainer([])
 
@@ -50,14 +50,23 @@ def index():
     return app.send_static_file('index.html')
 
 
+app.add_url_rule('/history', view_func=index)
+
+
 @app.route('/assets/<path:path>')
 def send_report(path):
     return send_from_directory('static/assets', path)
 
 
+@app.route("/admin")
+def admin():
+    return str(config.admin)
+
+
 @sock.route('/status')
 def status_sock(ws):
     for status_json in ps.status_generator():
+        # status_json['admin'] = str(config.admin)
         ws.send(status_json)
 
 
@@ -68,46 +77,61 @@ def get_sessions():
 
 @app.get('/program/list')
 def get_programs():
-    return program_list
+    return program.ProgramListSchema().dump(prog_container)['programs']
 
 
-@app.get('/program/<int:id>')
-def get_program(id: int):
+@app.get('/program/<int:prog_id>')
+def get_program(prog_id: int):
     try:
         return program.ProgramSchema().dump(prog_container[id])
     except KeyError:
         return flask.Response("Program not found", status=404)
 
 
-@app.post('/program/add')
+@app.post('/program')
 def add_program():
     prog = program.ProgramSchema().load(request.json)
     prog_container.add(prog)
     return program.ProgramSchema().dump(prog_container[prog])
 
 
-@app.route('/program/run/<id>')
-def run_program(id):
-    prog = prog_container.get(int(flask.escape(id)))
+@app.delete('/program/<int:prog_id>')
+def delete_program(prog_id: int):
+    try:
+        return prog_container.remove(int(flask.escape(prog_id)))
+    except KeyError:
+        return flask.Response("Program not found", status=404)
+
+
+@app.put('/rogram/<int:prog_id>')
+def update_program(prog_id: int):
+    prog = program.ProgramSchema().load(request.json)
+    prog_container.modify(prog)
+    return program.ProgramSchema().dump(prog_container[prog])
+
+
+@app.route('/program/run/<prog_id>')
+def run_program(prog_id):
+    prog = prog_container.get(int(flask.escape(prog_id)))
     if prog is None:
         return flask.Response("Program not found", status=404)
     ps.start_program(prog)
     return flask.Response('1')
 
 
-@app.route('/program/stop/<id>')
-def stop_program(id):
+@app.route('/program/stop/<prog_id>')
+def stop_program(prog_id):
     ps.stop_program()
     return flask.Response('1')
 
 
-@app.route('/program/pause/<id>')
-def pause_program(id):
+@app.route('/program/pause/<prog_id>')
+def pause_program(prog_id):
     ps.pause_program()
     return flask.Response('1')
 
 
-@app.route('/program/resume/<id>')
-def resume_program(id):
+@app.route('/program/resume/<prog_id>')
+def resume_program(prog_id):
     ps.resume_program()
     return flask.Response('1')
