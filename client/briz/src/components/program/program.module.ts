@@ -28,7 +28,7 @@ export function programModule() {
   });
 
   function isActive(id: number | null): boolean {
-    if (!activeProgram.value || !id) return false;
+    if (!activeProgram.value || id === null) return false;
     return activeProgram.value.id === id;
   }
 
@@ -43,7 +43,7 @@ export function programModule() {
   }
 
   function setActiveById(programId: number | null) {
-    if (!programId) return;
+    if (programId === null) return;
     if (programId !== -1) {
       activeProgramId.value = programId;
       activeProgram.value = programs.value.find(
@@ -62,7 +62,7 @@ export function programModule() {
   }
 
   function openProgramEdit(id: number | null) {
-    if (!id) return;
+    if (id === null) return;
     router.push({ name: 'edit-program', params: { id: id } }).then();
   }
 
