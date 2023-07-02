@@ -90,7 +90,7 @@ def get_program(prog_id: int):
 
 @app.post('/program')
 def add_program():
-    prog = program.ProgramSchema().load(request.json)
+    prog = program.ProgramSchema().load(request.json, partial=['id'])
     prog_container.add(prog)
     return program.ProgramSchema().dump(prog_container[prog])
 
