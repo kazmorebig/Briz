@@ -1,38 +1,36 @@
-{
-  "programs": [
-    {
-      "id": 0,
-      "name": "Стандарт 5",
-      "description": "Описание 1",
-      "actions": [
-        {
-          "type": 0,
-          "duration": 5,
-          "value": "100"
-        },
-        {
-          "type": 0,
-          "duration": 55,
-          "value": "50"
-        }
-      ]
-    },
-    {
-      "id": 1,
-      "name": "Стандарт 10",
-      "description": "Описание 1",
-      "actions": [
-        {
-          "type": 0,
-          "duration": 10,
-          "value": "100"
-        },
-        {
-          "type": 0,
-          "duration": 50,
-          "value": "50"
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "actions": [
+      {
+        "type": 0,
+        "value": 100,
+        "duration": 5
+      },
+      {
+        "type": 0,
+        "value": 50,
+        "duration": 55
+      }
+    ],
+    "id": "0",
+    "name": "\u0421\u0442\u0430\u043d\u0434\u0430\u0440\u0442 5",
+    "description": "\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 1"
+  },
+  {
+    "actions": [
+      {
+        "type": 0,
+        "value": 100,
+        "duration": 10
+      },
+      {
+        "type": 0,
+        "value": 50,
+        "duration": 50
+      }
+    ],
+    "id": "1",
+    "name": "\u0421\u0442\u0430\u043d\u0434\u0430\u0440\u0442 10",
+    "description": "\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 1"
+  }
+]

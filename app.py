@@ -3,6 +3,7 @@ import logging
 import time
 from logging.config import dictConfig
 import os.path
+from typing import List, Optional
 
 import flask
 from flask import Flask, request, send_from_directory
@@ -40,9 +41,22 @@ config = Configuration()
 if os.path.exists('programs.json'):
     with open('programs.json', 'r') as f:
         json_data = json.load(f)
-        prog_container: program.ProgramContainer = program.ProgramListSchema().load(json_data)
+        programs: List[program.Program] = program.ProgramSchema(many=True).load(json_data)
 else:
-    prog_container = program.ProgramContainer([])
+    programs = []
+
+
+def program_by_id(prog_id: str) -> Optional[program.Program]:
+    try:
+        return next(filter(lambda x: x.id == prog_id, programs))
+    except StopIteration:
+        return None
+
+
+def save_programs():
+    data = program.ProgramSchema(many=True).dump(programs)
+    with open('programs.json', 'w') as f:
+        json.dump(data, f)
 
 
 @app.route("/")
@@ -77,42 +91,52 @@ def get_sessions():
 
 @app.get('/program/list')
 def get_programs():
-    return program.ProgramListSchema().dump(prog_container)['programs']
+    return program.ProgramSchema(many=True).dump(programs)
 
 
-@app.get('/program/<int:prog_id>')
-def get_program(prog_id: int):
-    try:
-        return program.ProgramSchema().dump(prog_container[id])
-    except KeyError:
-        return flask.Response("Program not found", status=404)
+@app.get('/program/<prog_id>')
+def get_program(prog_id: str):
+    prog = program_by_id(prog_id)
+    if prog is not None:
+        return program.ProgramSchema().dump(prog)
+    return flask.Response("Program not found", status=404)
 
 
 @app.post('/program')
 def add_program():
     prog = program.ProgramSchema().load(request.json, partial=['id'])
-    prog_container.add(prog)
-    return program.ProgramSchema().dump(prog_container[prog])
+    programs.append(prog)
+    save_programs()
+    return program.ProgramSchema().dump(prog)
 
 
-@app.delete('/program/<int:prog_id>')
-def delete_program(prog_id: int):
-    try:
-        return prog_container.remove(int(flask.escape(prog_id)))
-    except KeyError:
+@app.delete('/program/<prog_id>')
+def delete_program(prog_id: str):
+    prog_to_remove = program_by_id(prog_id)
+    if prog_to_remove is not None:
+        programs.remove(prog_to_remove)
+        save_programs()
+        return flask.Response('1')
+    else:
         return flask.Response("Program not found", status=404)
 
 
-@app.put('/rogram/<int:prog_id>')
-def update_program(prog_id: int):
-    prog = program.ProgramSchema().load(request.json)
-    prog_container.modify(prog)
-    return program.ProgramSchema().dump(prog_container[prog])
+@app.put('/program/<prog_id>')
+def update_program(prog_id: str):
+    prog = program_by_id(prog_id)
+    if prog is not None:
+        new_prog = program.ProgramSchema().load(request.json, partial=True)
+        for key, value in new_prog.__dict__.items():
+            if value is not None:
+                setattr(prog, key, value)
+        save_programs()
+        return program.ProgramSchema().dump(prog)
+    return flask.Response("Program not found", status=404)
 
 
 @app.route('/program/run/<prog_id>')
 def run_program(prog_id):
-    prog = prog_container.get(int(flask.escape(prog_id)))
+    prog = program_by_id(prog_id)
     if prog is None:
         return flask.Response("Program not found", status=404)
     ps.start_program(prog)

@@ -1,5 +1,6 @@
 import collections
 import itertools
+import uuid
 
 import marshmallow as ma
 from typing import List, Dict, Union
@@ -21,7 +22,7 @@ class Action:
 
 class Program:
     def __init__(self, id, name, description, actions):
-        self.id = id
+        self.id = id or uuid.uuid1().hex
         self.name = name
         self.description = description
         self.actions: List[Action] = actions
@@ -48,6 +49,7 @@ class Program:
 
 class ProgramContainer(collections.MutableMapping):
     def __init__(self, programs: List[Program]):
+        self.programs = programs
         self._programs_dict = {p.id: p for p in programs}
 
     def add(self, program: Program):
@@ -65,10 +67,6 @@ class ProgramContainer(collections.MutableMapping):
 
     def remove(self, program_id: int):
         del self._programs_dict[program_id]
-
-    @property
-    def programs(self):
-        return list(self._programs_dict.values())
 
     def __contains__(self, item):
         return item in self._programs_dict
@@ -104,7 +102,7 @@ class ActionSchema(ma.Schema):
 
 
 class ProgramSchema(ma.Schema):
-    id = ma.fields.Int()
+    id = ma.fields.String(required=False, allow_none=True)
     name = ma.fields.String(required=True)
     description = ma.fields.String()
     actions = ma.fields.Nested(ActionSchema, many=True)
