@@ -33,7 +33,7 @@ export function controlModule() {
       h(
         'span',
         {
-          style: 'display: inline-block; font-size: 4rem; font-weight: bold',
+          style: 'display: inline-block; font-weight: bold',
         },
         minutes
       ),
@@ -41,7 +41,7 @@ export function controlModule() {
       h(
         'span',
         {
-          style: 'display: inline-block; font-size: 4rem; font-weight: bold',
+          style: 'display: inline-block; font-weight: bold',
         },
         seconds
       ),
@@ -56,7 +56,7 @@ export function controlModule() {
 
   const isStopped = computed(() => state.value === stateEnum.stop);
 
-  function setState(value: state, programId: number | undefined) {
+  function setState(value: state, programId: string | undefined) {
     if (programId === undefined) return;
     BaseActionService.get(
       API_URL.SET_STATE_BY_ID(value, programId),

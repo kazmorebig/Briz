@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui/es/button';
 import { NSpace } from 'naive-ui/es/space';
+import { useResize } from '@/module/resize';
+const { smallResolution } = useResize();
 </script>
 
 <template>
   <n-space
-    justify="space-between"
-    style="width: 596px"
+    :justify="smallResolution ? 'center' : 'space-between'"
     :wrap-item="true"
     :wrap="true"
+    :size="20"
   >
     <n-button
       class="menu-button"
@@ -33,11 +35,13 @@ import { NSpace } from 'naive-ui/es/space';
   </n-space>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/styles/functions';
+
 .menu-button {
-  width: 280px;
-  height: 70px;
+  width: rem(280px);
+  height: rem(70px);
   box-shadow: -4px -4px 15px #3b3b3b, 4px 4px 15px #121212;
-  border-radius: 30px;
+  border-radius: rem(30px);
 }
 </style>

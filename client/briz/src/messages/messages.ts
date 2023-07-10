@@ -41,6 +41,15 @@ export const messages = {
         add: 'Добавить',
       },
     },
+    settings: {
+      title: 'Настройки',
+      theme: {
+        title: 'Оформление',
+        light: 'Светлое',
+        dark: 'Темное',
+        kids: 'Детское',
+      },
+    },
     base: {
       backButton: 'Назад',
     },

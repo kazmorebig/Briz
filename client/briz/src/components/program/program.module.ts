@@ -7,12 +7,13 @@ import { useRouter } from 'vue-router';
 import { Program } from '@/components/program/program.class';
 import type { Action } from '@/components/program/action.class';
 import { plainToClass } from 'class-transformer';
+import BaseActionService from '@/base/base-action.service';
 
 const sessionPeriod: Ref<number> = ref(0);
 const programs: Ref<Program[]> = ref([]);
 const programDescription: Ref<string | undefined> = ref();
 const activeProgram: Ref<Program | undefined> = ref();
-const activeProgramId: Ref<number | undefined> = ref();
+const activeProgramId: Ref<string | undefined> = ref();
 const actions: Ref<Action[] | undefined> = ref();
 
 export function programModule() {
@@ -23,11 +24,7 @@ export function programModule() {
     programs.value = plainToClass(Program, data.value as Program[]) || [];
   }
 
-  onMounted(async () => {
-    await fetchPrograms();
-  });
-
-  function isActive(id: number | null): boolean {
+  function isActive(id: string | null): boolean {
     if (!activeProgram.value || id === null) return false;
     return activeProgram.value.id === id;
   }
@@ -38,18 +35,18 @@ export function programModule() {
     sessionPeriod.value = actions.value
       ? actions.value.reduce((acc, a) => acc + a.duration, 0)
       : 0;
-    activeProgramId.value = activeProgram.value?.id ?? 0;
+    activeProgramId.value = activeProgram.value?.id ?? undefined;
     programDescription.value = activeProgram.value?.description;
   }
 
-  function setActiveById(programId: number | null) {
+  function setActiveById(programId: string | null) {
     if (programId === null) return;
-    if (programId !== -1) {
+    if (programId !== '') {
       activeProgramId.value = programId;
       activeProgram.value = programs.value.find(
         (program) => program.id === programId
       );
-      actions.value = JSON.parse(JSON.stringify(activeProgram.value?.actions));
+      actions.value = activeProgram.value?.actions;
       sessionPeriod.value = actions.value
         ? actions.value.reduce((acc, a) => acc + a.duration, 0)
         : 0;
@@ -61,9 +58,16 @@ export function programModule() {
     router.push({ name: 'create-program' }).then();
   }
 
-  function openProgramEdit(id: number | null) {
+  function openProgramEdit(id: string | null) {
     if (id === null) return;
     router.push({ name: 'edit-program', params: { id: id } }).then();
+  }
+
+  function deleteProgram(id: string | null) {
+    if (id === null) return;
+    BaseActionService.delete(API_URL.PROGRAM(id)).then(() => {
+      fetchPrograms();
+    });
   }
 
   return {
@@ -77,5 +81,7 @@ export function programModule() {
     sessionPeriod: readonly(sessionPeriod),
     openProgramCreation,
     openProgramEdit,
+    deleteProgram,
+    fetchPrograms,
   };
 }

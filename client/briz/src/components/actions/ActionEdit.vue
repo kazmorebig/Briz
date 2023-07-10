@@ -3,10 +3,14 @@ import { NSpace, NInputNumber, NButton, NIcon } from 'naive-ui';
 import { Action } from '../program/action.class';
 import { onMounted, ref } from 'vue';
 import { Delete24Regular } from '@vicons/fluent';
+import { useProgramForm } from '@/components/program/program-form.module';
+const { deleteAction } = useProgramForm();
+
 const emptyAction = new Action(0, 0, 0);
 let updatedAction = ref(emptyAction);
 const props = defineProps<{
   action: Action | null;
+  index: number;
 }>();
 
 onMounted(() => {
@@ -43,7 +47,7 @@ onMounted(() => {
       v-model:value="updatedAction.value"
       button-placement="both"
     />
-    <n-button size="large">
+    <n-button size="large" @click="deleteAction(index)">
       <template #icon>
         <n-icon size="32" :component="Delete24Regular"></n-icon>
       </template>
@@ -52,20 +56,22 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+@import 'src/styles/functions';
+
 .n-space {
   width: 100%;
   background: #1e1e1e;
-  padding: 22px;
-  border-radius: 10px;
+  padding: rem(22px);
+  border-radius: rem(10px);
 }
 .n-input-number {
-  width: 200px;
+  width: rem(200px);
   text-align: center;
 }
 .n-input__prefix {
-  width: 60px !important;
+  width: rem(60px) !important;
 }
 .n-input__suffix {
-  width: 60px !important;
+  width: rem(60px) !important;
 }
 </style>

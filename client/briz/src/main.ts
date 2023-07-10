@@ -5,7 +5,7 @@ import 'reflect-metadata';
 import App from './App.vue';
 import router from './router';
 
-import './assets/main.css';
+import './styles/main.scss';
 import { createI18n } from 'vue-i18n';
 import { messages } from '@/messages/messages';
 import { UserService } from '@/core/user.service';
@@ -16,8 +16,10 @@ getAdminStatus();
 const app = createApp(App);
 
 const i18n = createI18n({
+  legacy: false,
   locale: 'ru', // set locale
   fallbackLocale: 'en', // set fallback locale
+  globalInjection: true,
   messages, // set locale messages
   // If you need to specify other options, you can set other options
   // ...

@@ -8,14 +8,13 @@ import { NGrid, NGridItem } from 'naive-ui';
 
 <template>
   <n-grid
-    cols="3"
+    cols="1 s:1 m:3 l:3 xl:3 2xl:3"
     x-gap="20"
+    y-gap="40"
     item-responsive
-    responsive="self"
-    :collapsed="true"
-    :collapsed-rows="1"
+    responsive="screen"
   >
-    <n-grid-item span="2 m:2 l:2">
+    <n-grid-item span="2 m:2 l:2 xl:2 2xl:2">
       <MainDescription />
       <ControlSystem></ControlSystem>
       <MenuButtons />

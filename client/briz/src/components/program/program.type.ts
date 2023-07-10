@@ -1,5 +1,5 @@
 export interface IProgram {
-  id: number | null;
+  id: string | null;
   name: string;
   description: string;
   actions: IAction[];

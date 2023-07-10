@@ -42,11 +42,7 @@ const { elapsedTime } = setWebSocket();
     </n-button>
     <div class="title-control">
       <n-p type="default">{{ $t('control.title') }}</n-p>
-      <n-text
-        :type="isActivated ? 'error' : 'default'"
-        style="font-size: 4rem; font-weight: bold"
-        depth="3"
-      >
+      <n-text :type="isActivated ? 'error' : 'default'" class="timer" depth="3">
         <n-countdown
           ref="countdown"
           :duration="(sessionPeriod - elapsedTime) * 1000"
@@ -80,6 +76,17 @@ const { elapsedTime } = setWebSocket();
 </template>
 
 <style lang="scss" scoped>
+@import 'src/styles/functions';
+@import 'src/styles/params.scss';
+
+.timer {
+  font-size: rem(64px);
+  font-weight: bold;
+  @media screen and (min-width: $xs) and (max-width: $sm) {
+    font-size: rem(40px);
+  }
+}
+
 .title-control {
   text-align: center;
 }
@@ -87,14 +94,15 @@ const { elapsedTime } = setWebSocket();
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 3.5rem 0;
+  margin: rem(50px) 0;
 }
+
 .btn-control {
-  width: 110px;
-  height: 110px;
+  width: rem(110px);
+  height: rem(110px);
   background: linear-gradient(135deg, #515151 15.17%, #0a0a0a 86.17%);
   box-shadow: -4px -4px 15px #3b3b3b, 7px 7px 15px #121212;
-  border-radius: 200px;
+  border-radius: rem(200px);
   border: none !important;
   &.active {
     background: linear-gradient(135deg, #0a0a0a 15.17%, #515151 86.17%);

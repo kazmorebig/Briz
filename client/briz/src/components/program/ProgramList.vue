@@ -5,11 +5,21 @@ import { NSpace } from 'naive-ui/es/space';
 import { NLayout, NLayoutContent, NIcon, NButton } from 'naive-ui';
 import { Add12Regular } from '@vicons/fluent';
 import { UserService } from '@/core/user.service';
+import { onMounted } from 'vue';
 
 const { isAdmin } = UserService();
 
-const { programs, isActive, setActiveById, openProgramCreation } =
-  programModule();
+const {
+  programs,
+  isActive,
+  setActiveById,
+  openProgramCreation,
+  fetchPrograms,
+} = programModule();
+
+onMounted(async () => {
+  await fetchPrograms();
+});
 </script>
 
 <template>
@@ -27,6 +37,7 @@ const { programs, isActive, setActiveById, openProgramCreation } =
             v-for="(program, index) of programs"
             :item="program"
             :key="index"
+            :index="index"
             style="margin-bottom: 10px; cursor: pointer"
             :active="isActive(program.id)"
             @click="setActiveById(program.id)"
@@ -49,9 +60,11 @@ const { programs, isActive, setActiveById, openProgramCreation } =
 </template>
 
 <style scoped lang="scss">
+@import 'src/styles/functions';
+
 .create-button {
   width: 100%;
-  height: 90px;
+  height: rem(90px);
   border: #1e1e1e solid 1px;
   border-radius: 10px;
 }
