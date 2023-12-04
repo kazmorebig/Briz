@@ -1,4 +1,20 @@
-$font-family: 'Roboto', serif;
+@font-face {
+  font-family: 'Mulish';
+  src: url('../../public/fonts/Mulish-Regular.ttf') format('truetype'),
+  url('../../public/fonts/Mulish-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Mulish';
+  src: url('../../public/fonts/Mulish-Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'Mulish';
+  src: url('../../public/fonts/Mulish-Italic.ttf') format('truetype');
+  font-style: italic;
+}
+
+$font-family: 'Mulish', sans-serif;
 $main-font-size: 16px;
 
 $xs: 320px;

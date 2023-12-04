@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NButton, NIcon } from 'naive-ui';
-import back from '/src/assets/svg/back.svg';
+import back from '/public/svg/back.svg';
 const props = defineProps<{
   link: string;
 }>();
