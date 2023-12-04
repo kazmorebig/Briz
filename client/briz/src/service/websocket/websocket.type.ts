@@ -2,7 +2,7 @@ import { stateEnum } from '@/components/controls/control.module';
 
 export interface WebsocketData {
   program_status: ProgramStatus;
-  program_id: number;
+  program_id: string;
   elapsed_time: number;
   current_power: number;
   admin: boolean;

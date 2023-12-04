@@ -11,12 +11,22 @@ const router = createRouter({
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('../views/Settings.vue'),
+      component: () => import('../views/SettingsPage.vue'),
     },
     {
       path: '/history',
       name: 'history',
       component: () => import('../views/SessionsHistory.vue'),
+    },
+    {
+      path: '/create',
+      name: 'create-program',
+      component: () => import('../views/ProgramCreate.vue'),
+    },
+    {
+      path: '/edit/:id',
+      name: 'edit-program',
+      component: () => import('../views/ProgramEdit.vue'),
     },
   ],
 });

@@ -1,12 +1,12 @@
-export interface Program {
-  id: number;
+export interface IProgram {
+  id: string | null;
   name: string;
   description: string;
-  actions: Action[];
+  actions: IAction[];
 }
 
-export interface Action {
+export interface IAction {
   type: number;
   duration: number;
-  value: string;
+  value: number;
 }

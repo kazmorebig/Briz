@@ -9,7 +9,7 @@ const { programDescription } = programModule();
 </script>
 
 <template>
-  <div class="wrapper">
+  <div class="main-wrapper">
     <h2>{{ $t('main.title') }}</h2>
     <div>
       <p>{{ programDescription }}</p>
@@ -37,9 +37,9 @@ const { programDescription } = programModule();
 </template>
 
 <style lang="scss" scoped>
-.wrapper {
+.main-wrapper {
   width: 100%;
-
+  overflow: hidden;
   h2 {
     text-align: center;
   }

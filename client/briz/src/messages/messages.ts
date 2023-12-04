@@ -27,6 +27,28 @@ export const messages = {
       title: 'Выбор режима',
       edit: 'Редактировать',
       create: 'Создать',
+      createTitle: 'Создание',
+      editTitle: 'Редактирование',
+      saveButton: 'Сохранить',
+      time: 'Общее время',
+      form: {
+        name: 'Название',
+        description: 'Описание',
+      },
+      action: {
+        period: 'Период, с',
+        volume: 'Мощность, %',
+        add: 'Добавить',
+      },
+    },
+    settings: {
+      title: 'Настройки',
+      theme: {
+        title: 'Оформление',
+        light: 'Светлое',
+        dark: 'Темное',
+        kids: 'Детское',
+      },
     },
     base: {
       backButton: 'Назад',
