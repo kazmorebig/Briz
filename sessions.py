@@ -8,7 +8,7 @@ from typing import List
 
 class Sessions:
 
-    Session = collections.namedtuple('Session', ['program', 'start', 'end'])
+    Session = collections.namedtuple('Session', ['program', 'start', 'end', 'starter_mac'])
 
     def __init__(self):
         self.sessions: List[Sessions.Session] = []
@@ -26,12 +26,12 @@ class Sessions:
             for s in self.sessions:
                 writer.writerow(tuple(s))
 
-    def start(self, program_name='Unknown'):
-        self.current_session = [program_name, int(time.time())]
+    def start(self, program_name='Unknown', starter_mac='-'):
+        self.current_session = [program_name, int(time.time()), 0, starter_mac]
 
     def stop(self):
         if self.current_session is not None:
-            self.current_session.append(int(time.time()))
+            self.current_session[2] = int(time.time())
             self.sessions.append(Sessions.Session(*self.current_session))
             self.write()
             self.current_session = None

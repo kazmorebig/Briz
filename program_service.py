@@ -58,11 +58,11 @@ class ProgramService:
             logger.debug(f'Change power to {power}')
             self.vents.set_power(power)
 
-    def start_program(self, program: Program):
+    def start_program(self, program: Program, starter_mac='-'):
         logger.debug(f'Start {self.current_program}')
         self.stop_program()
         self.current_program = program
-        self.sessions.start(self.current_program.name)
+        self.sessions.start(self.current_program.name, starter_mac)
 
     def stop_program(self):
         logger.debug(f'Stop {self.current_program}')
