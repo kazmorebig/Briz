@@ -4,6 +4,7 @@ import ControlSystem from '@/components/controls/ControlSystem.vue';
 import MenuButtons from '@/components/menu/MenuButtons.vue';
 import ProgramList from '@/components/program/ProgramList.vue';
 import { NGrid, NGridItem } from 'naive-ui';
+import AdminModal from '@/components/admin/AdminModal.vue';
 </script>
 
 <template>
@@ -21,6 +22,7 @@ import { NGrid, NGridItem } from 'naive-ui';
     </n-grid-item>
     <n-grid-item span="1">
       <ProgramList></ProgramList>
+      <AdminModal></AdminModal>
     </n-grid-item>
   </n-grid>
 </template>

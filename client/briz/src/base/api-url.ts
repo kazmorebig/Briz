@@ -10,4 +10,6 @@ export const API_URL = {
   GET_ADMIN: `${BASE_URL}/admin`,
   CREATE_PROGRAM: `${BASE_URL}/program`,
   UPDATE_PROGRAM: (id: string) => `${BASE_URL}/program/${id}`,
+  LOGIN: `${BASE_URL}/login`,
+  LOGOUT: `${BASE_URL}/logout`,
 };

@@ -53,6 +53,10 @@ export const messages = {
     base: {
       backButton: 'Назад',
     },
+    admin: {
+      title: 'Введите ПИН-код',
+      enter: 'Войти',
+    },
   },
   kz: {
     main: {

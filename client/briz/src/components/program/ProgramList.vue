@@ -6,6 +6,7 @@ import { NLayout, NLayoutContent, NIcon, NButton } from 'naive-ui';
 import { Add12Regular } from '@vicons/fluent';
 import { UserService } from '@/core/user.service';
 import { onMounted } from 'vue';
+import AdminButton from '@/components/admin/AdminButton.vue';
 
 const { isAdmin } = UserService();
 
@@ -24,8 +25,9 @@ onMounted(async () => {
 
 <template>
   <div>
-    <n-space size="large" justify="center">
+    <n-space size="large" justify="center" align="center">
       <h3>{{ $t('program.title') }}</h3>
+      <AdminButton></AdminButton>
     </n-space>
     <n-space vertical size="large">
       <n-layout has-sider :native-scrollbar="false" style="height: 400px">
