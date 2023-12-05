@@ -78,6 +78,10 @@ app.add_url_rule('/history', view_func=index)
 def send_report(path):
     return send_from_directory('static/assets', path)
 
+@app.route('/public/<path:path>')
+def send_public(path):
+    return send_from_directory('static', path)
+
 
 @app.route("/admin")
 def admin():

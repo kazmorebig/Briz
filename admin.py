@@ -22,8 +22,8 @@ def add_admin(mac: str):
         mac_list.append(mac)
         with open(admin_mac_file, 'w') as f:
             f.write('\n'.join(mac_list))
-        return True
-    return False
+        return '1'
+    return '0'
 
 
 def remove_admin(mac: str):
@@ -32,6 +32,6 @@ def remove_admin(mac: str):
         mac_list.remove(mac)
         with open(admin_mac_file, 'w') as f:
             f.writelines(mac_list)
-        return True
+        return '1'
     except ValueError:
-        return False
+        return '0'
