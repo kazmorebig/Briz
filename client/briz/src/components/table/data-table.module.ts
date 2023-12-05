@@ -35,6 +35,10 @@ export function dataTableModule() {
       title: 'Время окончания',
       key: 'endDate',
     },
+    {
+      title: 'MAC адрес',
+      key: 'mac',
+    },
   ];
 
   const pagination: PaginationProps = { pageSize: 7 };

@@ -30,6 +30,9 @@ export function theme() {
       fontSizeSmall: smallResCheck('21px', '14px'),
       errorColor: '#FF3030',
     },
+    Input: {
+      //color: 'transparent',
+    },
     Button: {
       textColor: '#fff',
       colorHover: '#6F6F6F',

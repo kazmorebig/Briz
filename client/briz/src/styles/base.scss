@@ -1,13 +1,13 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
-  --vt-c-white-soft: #E1E1E1;
+  --vt-c-white-soft: #e1e1e1;
 
   --vt-c-black: #272727;
-  --vt-c-black-soft: #1E1E1E;
+  --vt-c-black-soft: #1e1e1e;
 
-  --vt-c-grey: #6F6F6F;
-  --vt-c-red: #FF3030;
+  --vt-c-grey: #6f6f6f;
+  --vt-c-red: #ff3030;
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -21,7 +21,7 @@
 }
 
 /* semantic color variables for this project */
-[data-theme="light"] {
+[data-theme='light'] {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
@@ -47,7 +47,8 @@
   --color-text: var(--vt-c-white);
 
   --n-bezier-ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --n-box-shadow: 0 6px 16px -9px rgba(0, 0, 0, 0.08), 0 9px 28px 0 rgba(0, 0, 0, 0.05), 0 12px 48px 16px rgba(0, 0, 0, 0.03);
+  --n-box-shadow: 0 6px 16px -9px rgba(0, 0, 0, 0.08),
+    0 9px 28px 0 rgba(0, 0, 0, 0.05), 0 12px 48px 16px rgba(0, 0, 0, 0.03);
   --n-color: #fff;
   --n-text-color: var(--vt-c-white) !important;
 }
@@ -81,7 +82,7 @@ body {
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
-  font-family: Mulish, Inter, sans-serif;
+  font-family: $font-family;
   font-size: 21px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
