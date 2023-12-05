@@ -1,4 +1,4 @@
-import{p as u}from"./LayoutContent-af7960e8.js";import{c as h,g as a,d as v,b as i,u as f,e as d,f as m,h as C,b_ as x}from"./index-8345d350.js";const y=h("layout-header",`
+import{p as u}from"./LayoutContent-135e8955.js";import{c as h,g as a,d as v,b as i,u as f,e as d,f as m,h as C,b_ as x}from"./index-934ffed8.js";const y=h("layout-header",`
  transition:
  color .3s var(--n-bezier),
  background-color .3s var(--n-bezier),
