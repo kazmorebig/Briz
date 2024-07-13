@@ -47,7 +47,7 @@ class Program:
         return 0
 
 
-class ProgramContainer(collections.MutableMapping):
+class ProgramContainer(collections.abc.MutableMapping):
     def __init__(self, programs: List[Program]):
         self.programs = programs
         self._programs_dict = {p.id: p for p in programs}

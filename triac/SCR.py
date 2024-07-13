@@ -86,11 +86,15 @@ class SCR:
         ch[5] = self.SET_Check_Digit(ch)
         self.SendCommand(ch)
 
-scr = SCR(data_mode=0)
-scr.Reset(0)
-time.sleep(2)
-scr.SetMode(1)
-scr.GridFrequency(50)
-scr.VoltageRegulation(1, 0)
-scr.ChannelEnable(1)
-current_angle = 0
+try:
+    scr = SCR(data_mode=0)
+    scr.Reset(0)
+    time.sleep(2)
+    scr.SetMode(1)
+    scr.GridFrequency(50)
+    scr.VoltageRegulation(1, 0)
+    scr.ChannelEnable(1)
+    current_angle = 0
+except:
+    print('Unable to set up Triac module')
+    scr = None
