@@ -12,6 +12,7 @@ setup(
         'marshmallow==3.21.3',
         'RPi.GPIO==0.7.1',
         'pyserial==3.5',
-        'smbus==1.1.post2'
+        'smbus==1.1.post2',
+        'adafruit-circuitpython-bmp3xx==1.3.19'
     ]
 )

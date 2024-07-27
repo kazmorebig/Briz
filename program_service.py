@@ -8,7 +8,16 @@ from typing import Optional
 from program import Program
 from sessions import Sessions
 
+try:
+    from bmp import bmp
+except ImportError:
+    bmp = None
+
 logger = logging.getLogger()
+
+MAX_BLOW_UP_TIME = 10
+BLOW_UP_POWER = 100
+PRESSURE_THRESHOLD = 1.0  # hPa
 
 
 class ProgramService:
@@ -22,10 +31,31 @@ class ProgramService:
         self.daemon_tick = threading.Event()
         threading.Thread(target=self.daemon, daemon=True).start()
 
+    def blow_up(self):
+        self._set_power(100)
+        if not bmp:
+            logger.debug(f'No BMP sensor found')
+            time.sleep(5.0)
+        start_stamp = time.time()
+        pressure_curve = []
+        while time.time() - start_stamp < MAX_BLOW_UP_TIME:
+            time.sleep(0.1)
+            pressure_curve.append(bmp.pressure)
+            target_pressure = max(pressure_curve) - PRESSURE_THRESHOLD
+            if pressure_curve[-1] < target_pressure:
+                logger.debug(f'Pressure reduced after {time.time() - start_stamp:.2f}s')
+                break
+        else:
+            logger.debug(f'Pressure haven\'t been reduced')
+        with open('logs/bmp.log', 'w') as f:
+            f.write('\n'.join([f'{p:.2f}' for p in pressure_curve]))
+
     def daemon(self):
         logger.debug(f'Daemon started')
         while True:
             if self.current_program is not None and not self.paused:
+                if self.vents.current_power == 0:
+                    self.blow_up()
                 self.elapsed_time += 1
                 self._set_power(self.current_program.get_power(self.elapsed_time))
                 if not self.current_program.is_active(self.elapsed_time):

@@ -12,6 +12,7 @@ from flask_sock import Sock
 from flask_cors import CORS
 
 import program
+from bmp import bmp
 from triac.controller import Controller
 from program_service import ProgramService
 from server_config import Configuration
@@ -191,3 +192,13 @@ def pause_program(prog_id):
 def resume_program(prog_id):
     ps.resume_program()
     return flask.Response('1')
+
+@app.route('/bmp')
+def bmp_request():
+    s_data = ''
+    for i in range(100):
+        stamp = time.time()
+        pressure = bmp.pressure
+        interval = time.time() - stamp
+        s_data += f'{pressure:.2f} hPa; {interval:.3f}s<br>'
+    return flask.Response(s_data)
