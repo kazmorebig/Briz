@@ -12,11 +12,13 @@ from flask_sock import Sock
 from flask_cors import CORS
 
 import program
-from bmp import bmp
+# from bmp import bmp
+
 from triac.controller import Controller
 from program_service import ProgramService
 from server_config import Configuration
 from admin import add_admin, remove_admin, is_admin
+from server_config import config
 
 dictConfig({
     'version': 1,
@@ -40,7 +42,7 @@ CORS(app)
 sock = Sock(app)
 vents = Controller()
 ps = ProgramService(vents)
-config = Configuration()
+
 
 if os.path.exists('programs.json'):
     with open('programs.json', 'r') as f:
@@ -88,6 +90,9 @@ def send_public(path):
 def admin():
     return str(int(is_admin(my_mac())))
 
+@app.route("/laser")
+def laser():
+    return str(int(config.laser_in))
 
 @app.post('/login')
 def login():
